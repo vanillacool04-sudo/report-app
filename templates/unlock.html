@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>กรุณาใส่รหัสผ่าน</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+
+<div class="card shadow p-4" style="width: 360px;">
+    <h5 class="text-center mb-3">🔒 เข้าสู่ระบบ</h5>
+
+    {% if error %}
+    <div class="alert alert-danger text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+        <div class="mb-3">
+            <input
+                type="password"
+                name="password"
+                class="form-control text-center"
+                placeholder="ใส่รหัสผ่าน"
+                required
+            >
+        </div>
+
+        <button class="btn btn-primary w-100">
+            เข้าใช้งาน
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

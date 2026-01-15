@@ -533,6 +533,7 @@ def export_attendance_excel():
 
 
 
+from flask import session, request, redirect, render_template, url_for
 
 
 # =========================
@@ -540,7 +541,11 @@ def export_attendance_excel():
 # =========================
 @app.route("/")
 def index():
-    return render_template("index.html")   
+    if not session.get("unlocked"):
+        return redirect("/unlock")
+
+    return render_template("index.html")
+  
 #==================================================
 # ส่งข้อมูลไปที่หน้า report
 #==================================================
@@ -2341,6 +2346,24 @@ def export_assets_summary():
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
+# ==================================================
+# ใส่รหัส
+# ==================================================
+@app.route("/unlock", methods=["GET", "POST"])
+def unlock():
+    if request.method == "POST":
+        password = request.form.get("password")
+
+        if password == "123654":
+            session["unlocked"] = True
+            return redirect("/")
+        else:
+            return render_template(
+                "unlock.html",
+                error="รหัสไม่ถูกต้อง"
+            )
+
+    return render_template("unlock.html")
 
 # ==================================================
 # reset สถานะ
