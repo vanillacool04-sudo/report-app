@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>เพิ่มครุภัณฑ์</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme กลาง -->
+    <link rel="stylesheet" href="/static/theme.css">
+
+    <style>
+        /* คุมความกว้าง input */
+        .input-sm { max-width: 180px; }
+        .input-md { max-width: 320px; }
+        .input-lg { max-width: 100%; }
+
+        @media (max-width: 768px) {
+            .input-sm,
+            .input-md {
+                max-width: 100%;
+            }
+        }
+
+        .value-note {
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="report-header">
+        <div>
+            <h2>➕ เพิ่มครุภัณฑ์</h2>
+            <div class="text-muted">บันทึกข้อมูลครุภัณฑ์ใหม่เข้าสู่ระบบ</div>
+        </div>
+
+        <a href="/assets" class="btn-back">
+            ← กลับรายการครุภัณฑ์
+        </a>
+    </div>
+
+    <form method="post">
+
+        <!-- ข้อมูลหลัก -->
+        <div class="section-box">
+            <h5>ข้อมูลครุภัณฑ์</h5>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>เลขครุภัณฑ์</label>
+                    <input type="text"
+                           name="asset_no"
+                           class="form-control input-md"
+                           required>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>ประเภท</label>
+                    <select name="asset_type"
+                            class="form-select input-md"
+                            required>
+                        <option value="" disabled selected>-- เลือกประเภท --</option>
+                        <option value="Computer">Computer</option>
+                        <option value="Notebook">Notebook</option>
+                        <option value="Printer">Printer</option>
+                        <option value="Scanner">Scanner</option>
+                        <option value="Tablet">Tablet</option>
+                        <option value="UPS">UPS</option>
+                        <option value="จอประชาสัมพันธ์">จอประชาสัมพันธ์</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>รุ่น</label>
+                    <input type="text"
+                           name="asset_model"
+                           class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>Serial Number</label>
+                    <input type="text"
+                           name="serial_no"
+                           class="form-control input-md">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>MAC Address</label>
+                    <input type="text"
+                           name="mac_address"
+                           class="form-control input-md">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>ชื่อเครื่อง</label>
+                    <input type="text"
+                           name="hostname"
+                           class="form-control input-md">
+                </div>
+            </div>
+        </div>
+
+        <!-- ผู้ใช้งาน -->
+        <div class="section-box">
+            <h5>ข้อมูลผู้ใช้งาน</h5>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>ผู้ครอบครอง</label>
+                    <input type="text"
+                           name="owner_name"
+                           class="form-control input-md">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>ตำแหน่ง</label>
+                    <input type="text"
+                           name="position"
+                           class="form-control input-md">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label>หน่วยงาน</label>
+                    <select name="department"
+                            class="form-select input-md"
+                            required>
+                        {% for short, full in dept_map.items() %}
+                            <option value="{{ short }}">{{ full }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- สถานะ -->
+        <div class="section-box">
+            <h5>สถานะครุภัณฑ์</h5>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>สถานะ</label>
+                    <select name="status"
+                            class="form-select input-md">
+                        <option value="ใช้งาน">ใช้งาน</option>
+                        <option value="ยังไม่ได้ตรวจสอบ">ยังไม่ได้ตรวจสอบ</option>
+                        <option value="เลิกใช้">เลิกใช้</option>
+                    </select>
+                    <div class="value-note mt-1">
+                        ใช้สำหรับติดตามสถานะการใช้งาน
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION -->
+        <div class="submit-wrapper">
+            <button type="submit" class="btn btn-primary submit-btn">
+                💾 บันทึกข้อมูล
+            </button>
+            <a href="/assets" class="btn btn-secondary ms-2">
+                ยกเลิก
+            </a>           
+            <a href="/" class="btn btn-secondary">
+                ← กลับหน้าหลัก
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

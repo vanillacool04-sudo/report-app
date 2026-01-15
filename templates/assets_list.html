@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>รายการครุภัณฑ์</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme -->
+    <link rel="stylesheet" href="/static/theme.css">
+
+    <style>
+        body {
+            background: linear-gradient(
+                180deg,
+                #eaf2ff 0%,
+                #f4f8ff 45%,
+                #ffffff 100%
+            );
+            min-height: 100vh;
+            color: #1f2937;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(rgba(108,168,255,0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding-top: 32px;
+            padding-bottom: 48px;
+        }
+
+        /* select ให้ดูเป็นปุ่ม */
+        .dept-select {
+            min-width: 220px;
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-weight: 600;
+            border: 1px solid rgba(108,168,255,0.5);
+            background-color: #ffffff;
+        }
+
+        .dept-select:focus {
+            outline: none;
+            border-color: #6ca8ff;
+            box-shadow: 0 0 0 3px rgba(108,168,255,0.25);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="report-header">
+        <div>
+            <h2>📦 {{ page_title }}</h2>
+            <div class="text-muted">
+                รายการข้อมูลครุภัณฑ์ในระบบ
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <form method="post"
+                action="/assets/reset-check-status"
+                onsubmit="return confirmReset();"
+                class="d-inline">
+
+            <button type="submit" class="btn btn-warning">
+                🔄 เริ่มรอบตรวจสอบใหม่
+            </button>
+
+            
+            <a href="/assets/import" class="btn btn-primary">
+                ⬆️ Import Excel
+            </a>
+            <a href="{{ url_for('add_asset') }}" class="btn btn-success">
+                ➕ เพิ่มครุภัณฑ์
+            </a>
+
+            <a href="/" class="btn btn-secondary">
+                ← กลับหน้าหลัก
+            </a>
+        </div>
+    </div>
+
+
+    <!-- FILTER -->
+    <div class="section-box">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <h5 class="mb-0">รายการครุภัณฑ์</h5>
+
+            <!-- เลือกหน่วยงาน -->
+            <select class="dept-select"
+                    onchange="changeDept(this.value)">
+                <option value=""
+                        {% if not current_dept %}selected{% endif %}>
+                    เลือกหน่วยงาน
+                </option>
+
+                {% for short, full in dept_map.items() %}
+                <option value="{{ short }}"
+                        {% if current_dept == short %}selected{% endif %}>
+                    {{ full }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <!-- เลือกสถานะ -->
+            <select class="dept-select"
+                    onchange="changeStatus(this.value)">
+                <option value="">สถานะทั้งหมด</option>
+                <option value="ใช้งาน" {% if status == 'ใช้งาน' %}selected{% endif %}>
+                    ใช้งาน
+                </option>
+                <option value="ยังไม่ได้ตรวจสอบ"
+                        {% if status == 'ยังไม่ได้ตรวจสอบ' %}selected{% endif %}>
+                    ยังไม่ได้ตรวจสอบ
+                </option>
+                <option value="เลิกใช้" {% if status == 'เลิกใช้' %}selected{% endif %}>
+                    เลิกใช้
+                </option>
+            </select>
+        </div>
+    </div>
+
+
+   
+
+    <!-- TABLE -->
+    <div class="section-box">
+        <div class="table-responsive-horizontal">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="60">ลำดับ</th>
+                        <th>เลขครุภัณฑ์</th>
+                        <th>ประเภท</th>
+                        <th>รุ่น</th>
+                        <th>Serial</th>
+                        <th>ชื่อเครื่อง</th>
+                        <th>ผู้ครอบครอง</th>
+                        <th>หน่วยงาน</th>
+                        <th class="text-center">สถานะ</th>
+                        <th class="text-center" width="90">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% if assets %}
+                    {% for a in assets %}
+                    <tr>
+                        <td class="text-center">{{ loop.index }}</td>
+                        <td>{{ a[1] }}</td>
+                        <td>{{ a[2] }}</td>
+                        <td>{{ a[3] }}</td>
+                        <td>{{ a[4] }}</td>
+                        <td>{{ a[5] }}</td>
+                        <td>{{ a[6] }}</td>
+                        <td>{{ a[7] }}</td>
+
+                        <td class="text-center">
+                            {% if a[8] == 'ยังไม่ได้ตรวจสอบ' %}
+                                <span class="badge-status badge-danger">ยังไม่ได้ตรวจ</span>
+                            {% elif a[8] == 'ใช้งาน' %}
+                                <span class="badge-status badge-active">ใช้งาน</span>
+                            {% else %}
+                                <span class="badge-status badge-secondary">เลิกใช้</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            <a href="/assets/edit/{{ a[0] }}" class="btn btn-sm btn-outline-warning">✏️</a>
+                            <a href="/assets/delete/{{ a[0] }}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('ยืนยันการลบครุภัณฑ์นี้?');">
+                               🗑
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted py-4">
+                            ยังไม่มีข้อมูลครุภัณฑ์
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+        <a href="/assets/export-excel?{% if current_dept %}dept={{ current_dept }}&{% endif %}{% if status %}status={{ status }}{% endif %}"
+        class="btn btn-success">
+            📥 Export Excel
+        </a>
+
+        <a href="/" class="btn btn-secondary">
+            ← กลับหน้าหลัก
+        </a>
+    </div>
+
+</div>
+
+            <script>
+            function confirmReset() {
+                const first = confirm(
+                    "การดำเนินการนี้จะรีเซ็ทสถานะการตรวจสอบ\n" +
+                    "เฉพาะครุภัณฑ์ที่ยังใช้งานอยู่\n\n" +
+                    "สถานะ 'เลิกใช้' จะไม่ถูกเปลี่ยน\n\n" +
+                    "ต้องการดำเนินการต่อหรือไม่?"
+                );
+
+                if (!first) return false;
+
+                const second = prompt(
+                    "พิมพ์คำว่า RESET เพื่อยืนยันการเริ่มรอบตรวจสอบใหม่"
+                );
+
+                return second === "RESET";
+            }
+            </script>
+
+            <script>
+            function changeStatus(status) {
+                const params = new URLSearchParams(window.location.search);
+
+                if (status) {
+                    params.set("status", status);
+                } else {
+                    params.delete("status");
+                }
+
+                window.location = "/assets?" + params.toString();
+            }
+            </script>
+
+            <script>
+            function changeDept(dept) {
+                const params = new URLSearchParams(window.location.search);
+
+                if (dept) {
+                    params.set("dept", dept);
+                } else {
+                    params.delete("dept");
+                }
+
+                window.location = "/assets?" + params.toString();
+            }
+
+            function changeStatus(status) {
+                const params = new URLSearchParams(window.location.search);
+
+                if (status) {
+                    params.set("status", status);
+                } else {
+                    params.delete("status");
+                }
+
+                window.location = "/assets?" + params.toString();
+            }
+            </script>
+
+
+
+
+</body>
+
+</html>

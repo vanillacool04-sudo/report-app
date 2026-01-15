@@ -1,0 +1,196 @@
+<!DOCTYPE html> 
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>หน้าหลักระบบแจ้งปัญหา</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme กลาง -->
+    <link rel="stylesheet" href="/static/theme.css">
+
+    <style>
+        body {
+            background: linear-gradient(
+                180deg,
+                #eaf2ff 0%,
+                #f4f8ff 45%,
+                #ffffff 100%
+            );
+            min-height: 100vh;
+        }
+
+        .page-header {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(108,168,255,0.15);
+            padding: 28px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .page-header h3 {
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 6px;
+        }
+
+        .menu-card {
+            border-radius: 18px;
+            border: 1px solid rgba(108,168,255,0.25);
+            box-shadow: 0 18px 40px rgba(59,130,246,0.15);
+            transition: all .25s ease;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #f9fbff 100%
+            );
+        }
+
+        .menu-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 26px 50px rgba(59,130,246,0.25);
+        }
+
+        .menu-icon {
+            font-size: 42px;
+            margin-bottom: 14px;
+        }
+
+        .menu-card h5 {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .menu-card p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        a.menu-link {
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+            display: block;
+        }
+
+        @media (max-width: 576px) {
+            .menu-icon {
+                font-size: 38px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container mt-1 mb-5">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h3>📋 ระบบแจ้งปัญหา & ครุภัณฑ์</h3>
+        <div class="text-muted">
+            เลือกเมนูที่ต้องการใช้งาน
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <div class="row g-4 justify-content-center">
+
+        <!-- บันทึกงาน -->
+        <div class="col-md-4">
+            <a href="/report" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">📝</div>
+                    <h5>บันทึกงาน</h5>
+                    <p>เพิ่มรายการแจ้งปัญหาใหม่</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- รายการงาน -->
+        <div class="col-md-4">
+            <a href="/list" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">📂</div>
+                    <h5>รายการงาน</h5>
+                    <p>ค้นหา ดู และแก้ไขข้อมูล</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- รายงานสรุป -->
+        <div class="col-md-4">
+            <a href="/report-summary" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">📊</div>
+                    <h5>รายงานสรุป</h5>
+                    <p>สถิติภาพรวม และส่งออก Excel</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- รายการครุภัณฑ์ -->
+        <div class="col-md-4">
+            <a href="/assets" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">📦</div>
+                    <h5>รายการครุภัณฑ์</h5>
+                    <p>ดู แก้ไข และจัดการครุภัณฑ์</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- เพิ่มครุภัณฑ์ -->
+        <div class="col-md-4">
+            <a href="/assets/add" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">➕</div>
+                    <h5>เพิ่มครุภัณฑ์</h5>
+                    <p>บันทึกข้อมูลครุภัณฑ์ใหม่</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Import ครุภัณฑ์ -->
+        <div class="col-md-4">
+            <a href="/assets/import" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">⬆️</div>
+                    <h5>Import ครุภัณฑ์</h5>
+                    <p>นำเข้าข้อมูลจากไฟล์ Excel</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- ⭐ สรุปครุภัณฑ์ (เพิ่มใหม่) -->
+        <div class="col-md-4">
+            <a href="/assets/summary" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">📈</div>
+                    <h5>สรุปครุภัณฑ์</h5>
+                    <p>Dashboard กราฟ และสถิติครุภัณฑ์</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a href="/attendance" class="menu-link">
+                <div class="menu-card p-4 text-center">
+                    <div class="menu-icon">⏰</div>
+                    <h5>ลงเวลาปฏิบัติงาน</h5>
+                    <p>บันทึกเวลาเข้า–ออก และจัดการใบลงเวลา</p>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>สรุปข้อมูลครุภัณฑ์</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="container mt-1">
+    <div class="page-title-card">
+        <h3>📊 สรุปข้อมูลครุภัณฑ์</h3>
+        <div class="subtitle">
+            ภาพรวมครุภัณฑ์ทั้งหมดในระบบ
+        </div>
+    </div>
+
+
+    <!-- ===== Pie Chart ===== -->
+    <div id="pieContainer"
+        class="mb-4 d-flex flex-column align-items-center"
+        style="display:none;">
+
+        <div id="pieTitle"
+            class="fw-bold text-center mb-3 fs-4"
+            style="color:#1e3a8a;">
+        </div>
+
+        <div style="width:400px;">
+            <canvas id="assetPie"></canvas>
+        </div>
+    </div>
+
+    <!-- ===== Bar Chart ===== -->
+    <!-- ===== Bar Chart ===== -->
+    <div class="card shadow mb-5">
+        <div class="card-header">
+            📈 กราฟสรุปครุภัณฑ์แยกตามหน่วยงาน
+        </div>
+        <div class="card-body">
+            <div class="chart-wrapper">
+                <canvas id="deptBar"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- ===== Search (อยู่ที่เดิม) ===== -->
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="ค้นหาเลขครุภัณฑ์"
+                value="{{ keyword }}"
+            >
+
+            <button class="btn btn-primary" type="submit">
+                ค้นหา
+            </button>
+
+            <!-- ปุ่มรีเซ็ต -->
+            <button
+                type="button"
+                class="btn btn-outline-secondary"
+                onclick="window.location.href='/assets/summary'">
+                รีเซ็ต
+            </button>
+        </div>
+    </form>
+    <!-- ===== รายละเอียดครุภัณฑ์ ===== -->
+    {% if asset_detail %}
+    <div class="card mb-4">
+        <div class="card-header text-center fw-semibold">
+            รายละเอียดครุภัณฑ์
+        </div>
+
+        <div class="card-body p-0">
+            <div style="overflow-x:auto;">
+                <table class="table table-bordered mb-0 text-center">
+                <thead>
+                <tr>
+                    <th>เลขครุภัณฑ์</th>
+                    <th>ประเภท</th>
+                    <th>รุ่น</th>
+                    <th>Serial</th>
+                    <th>ชื่อเครื่อง</th>
+                    <th>ผู้ครอบครอง</th>
+                    <th>หน่วยงาน</th>
+                    <th>สถานะ</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    {% for v in asset_detail %}
+                        <td>{{ v }}</td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% elif keyword %}
+    <div class="alert alert-warning">
+        ไม่พบข้อมูลครุภัณฑ์เลข {{ keyword }}
+    </div>
+    {% endif %}
+    
+    <!-- ===== Table Summary ===== -->
+        <div class="section-card">
+
+            <div class="section-title">
+                📋 ตารางสรุปครุภัณฑ์
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center">หน่วยงาน</th>
+                            {% for t in types %}
+                                <th class="text-center">{{ t }}</th>
+                            {% endfor %}
+                            <th class="text-center">จำนวนทั้งหมด</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for dept, data in summary.items() %}
+                        <tr>
+                            <td class="text-center fw-semibold">{{ dept }}</td>
+                            {% for t in types %}
+                                <td>{{ data["items"].get(t, 0) }}</td>
+                            {% endfor %}
+                            <td class="fw-bold">{{ data["total"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <th class="text-center">รวมทั้งหมด</th>
+                            {% for t in types %}
+                                <th>{{ grand_total["items"].get(t, 0) }}</th>
+                            {% endfor %}
+                            <th>{{ grand_total["total"] }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+    </table>
+</div>
+    <div class="d-flex justify-content-center gap-3 my-4">
+
+        <a href="/" class="btn btn-light border px-4">
+            ⬅ กลับหน้าหลัก
+        </a>
+
+        <a href="/assets/export-summary"
+        class="btn btn-success px-4 d-flex align-items-center gap-2">
+            <i class="bi bi-file-earmark-excel-fill"></i>
+            Export ตารางสรุป
+        </a>
+
+    </div>
+<!-- ===== Chart.js ===== -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<script>
+Chart.register(ChartDataLabels);
+
+/* ===== Data from Flask ===== */
+const deptLabels = {{ dept_total.keys() | list | tojson }};
+const deptData   = {{ dept_total.values() | list | tojson }};
+const deptDetail = {{ dept_detail | tojson }};
+const deptFullname = {{ dept_fullname | tojson }};
+
+/* ===== Pie Colors (แยกชัด แต่ยังโทนฟ้า) ===== */
+const pieColors = [
+    ["#e0f2fe", "#38bdf8"],
+    ["#dbeafe", "#3b82f6"],
+    ["#cffafe", "#06b6d4"],
+    ["#ede9fe", "#6366f1"],
+    ["#ecfeff", "#0ea5e9"],
+    ["#f0f9ff", "#0284c7"]
+];
+
+/* ===== Shadow Plugin ===== */
+const pieShadowPlugin = {
+    id: 'pieShadow',
+    beforeDatasetDraw(chart) {
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.25)';
+        ctx.shadowBlur = 15;
+        ctx.shadowOffsetY = 6;
+    },
+    afterDatasetDraw(chart) {
+        chart.ctx.restore();
+    }
+};
+
+let pieChart = null;
+
+/* ===== Render Pie ===== */
+function renderPie(labels, data) {
+    document.getElementById("pieContainer").style.display = "block";
+    const ctx = document.getElementById("assetPie").getContext("2d");
+
+    if (pieChart) pieChart.destroy();
+
+    pieChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: labels.map((_, i) => {
+                    const g = ctx.createLinearGradient(0, 0, 0, 300);
+                    const c = pieColors[i % pieColors.length];
+                    g.addColorStop(0, c[0]);
+                    g.addColorStop(1, c[1]);
+                    return g;
+                }),
+                borderColor: "#ffffff",
+                borderWidth: 2,
+                hoverOffset: 14
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: "bottom" },
+                datalabels: {
+                    color: "#1e3a8a",
+                    font: { weight: "bold", size: 12 },
+                    formatter: (v, ctx) => {
+                        const sum = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                        return `${ctx.chart.data.labels[ctx.dataIndex]}\n${v} (${((v/sum)*100).toFixed(1)}%)`;
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels, pieShadowPlugin]
+    });
+}
+
+/* ===== Bar Chart ===== */
+new Chart(document.getElementById("deptBar"), {
+    type: "bar",
+    data: {
+        labels: deptLabels,
+        datasets: [{
+            data: deptData,
+            barThickness: 20,
+            maxBarThickness: 24,
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: "#60a5fa",
+            backgroundColor: function(context) {
+                const chart = context.chart;
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return null;
+
+                const gradient = ctx.createLinearGradient(
+                    0,
+                    chartArea.top,
+                    0,
+                    chartArea.bottom
+                );
+                gradient.addColorStop(0, "#e0f2fe");
+                gradient.addColorStop(1, "#93c5fd");
+                return gradient;
+            }
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { grid: { display: false } },
+            y: {
+                beginAtZero: true,
+                grid: { color: "rgba(148,163,184,0.3)" }
+            }
+        },
+        onClick: function(evt, elements) {
+            if (!elements.length) return;
+
+            const deptShort = deptLabels[elements[0].index];
+            const deptName  = deptFullname[deptShort] || deptShort;
+
+            document.getElementById("pieTitle").innerText =
+                "สัดส่วนครุภัณฑ์ : " + deptName;
+
+            renderPie(
+                Object.keys(deptDetail[deptShort].items),
+                Object.values(deptDetail[deptShort].items)
+            );
+        }
+    }
+});
+</script>
+
+</body>
+</html>

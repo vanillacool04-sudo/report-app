@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ตารางสรุปงานรายเดือน</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/theme.css">
+
+    <style>
+        body {
+            background-color: #eef2f7;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+        }
+        .card-header {
+            background-color: #1f3a5f;
+            color: white;
+        }
+        table th {
+            background-color: #1f3a5f;
+            color: white;
+        }
+        table th, table td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+        .summary-card h6 {
+            font-size: 14px;
+        }
+        .summary-card h2 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        /* ===== REPORT SUMMARY – SAME TONE ===== */
+
+        /* กล่องหลัก */
+        .card,
+        .section-box {
+            background: linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #f9fbff 100%
+            );
+            border-radius: 18px;
+            border: 1px solid rgba(108, 168, 255, 0.18);
+            box-shadow: 0 18px 40px rgba(59, 130, 246, 0.12);
+        }
+
+        /* หัวการ์ด */
+        .card-header {
+            background: transparent;
+            color: #1e3a8a;
+            font-weight: 600;
+            border-bottom: none;
+        }
+
+        /* ตาราง */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        /* เส้นคั่นแนวขวาง */
+        .table tbody tr:not(:last-child) td,
+        .table tbody tr:not(:last-child) th {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+        }
+
+        /* hover เบา ๆ */
+        .table tbody tr:hover td,
+        .table tbody tr:hover th {
+            background-color: rgba(108, 168, 255, 0.05);
+        }
+
+        /* ตัวเลขสรุป (ถ้ามี) */
+        .summary-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* ===== SUMMARY CHART SIZE ===== */
+        .chart-wrapper {
+            width: 100%;        /* ⭐ สำคัญ */
+            max-width: none;    /* ⭐ เอาออก */
+            height: 320px;      /* เพิ่มความสูงนิดนึง */
+        }
+
+        body {
+            background-color: #eef2f7;
+            font-family: "Sarabun", system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        /* ===== SUMMARY CARDS (FIX SIZE & FONT) ===== */
+        .summary-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .summary-row .col-md-2 {
+            display: flex;
+        }
+
+        .summary-card {
+            width: 100%;
+            min-height: 110px;            /* ⭐ ความสูงเท่ากันทุกช่อง */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* หัวข้อ (เหมือนกันทุกช่อง) */
+        .summary-title {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: #000000;               /* ⭐ หัวข้อสีดำเหมือนเดิม */
+            margin-bottom: 6px;
+        }
+
+        /* ตัวเลข (ขนาดเท่ากันทุกช่อง) */
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* ===== COLORS FOR VALUES ONLY ===== */
+        .value-total {
+            color: #000000;   /* รวมทั้งหมด - ดำ */
+        }
+
+        .value-software {
+            color: #4067d1;   /* ฟ้าเข้ม */
+        }
+
+        .value-hardware {
+            color: #dc2626;   /* แดง */
+        }
+
+        .value-network {
+            color: #15803d;   /* เขียว */
+        }
+
+        .value-other {
+            color: #6b7280;   /* เทา */
+        }
+
+        /* ===== CENTER TEXT IN SELECT ===== */
+        .form-select {
+            text-align: center;
+            text-align-last: center; /* Chrome / Edge */
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container mt-2 mb-5">
+
+    <!-- ================= Header ================= -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-1">📋 ตารางสรุปงานรายเดือน</h4>
+            <div class="text-muted">
+                ช่วงวันที่: {{ date_from }} ถึง {{ date_to }}
+            </div>
+        </div>
+    </div>
+    <!-- ================= Filter Month ================= -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+
+                <div class="col-md-3 filter-center">
+                    <label class="form-label">เดือน</label>
+                    <select name="month" class="form-select">
+                        {% for m in range(1,13) %}
+                            <option value="{{ m }}"
+                                {% if m == selected_month %}selected{% endif %}>
+                                {{ "%02d"|format(m) }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 filter-center">
+                    <label class="form-label">ปี (ค.ศ.)</label>
+                    <select name="year" class="form-select">
+                        {% for y in range(current_year-3, current_year+1) %}
+                            <option value="{{ y }}"
+                                {% if y == selected_year %}selected{% endif %}>
+                                {{ y }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 🔍 ปุ่มค้นหา -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        🔍 แสดงรายงาน
+                    </button>
+                </div>
+
+                <!-- ⬅ กลับ -->
+                <div class="col-md-2">
+                    <a href="/report-summary" class="btn btn-outline-secondary w-100">
+                        ⬅ กลับ Report
+                    </a>
+                </div>
+
+                <!-- 📤 Export -->
+                <div class="col-md-2">
+                    <a
+  href="/report-monthly-summary/export?month={{ selected_month }}&year={{ selected_year }}&department={{ selected_department }}"
+  class="btn btn-success"
+>
+    📤 Export Excel
+</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= Summary Cards ================= -->
+    <div class="row mb-4 text-center justify-content-center summary-row">
+
+        <!-- รวมทั้งหมด -->
+        <div class="col-md-2 mb-2">
+            <div class="card p-3 summary-card">
+                <div class="summary-title">รวมทั้งหมด</div>
+                <div class="summary-value value-total">
+                    {{ grand_total.total }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Software / Hardware / Network / Other -->
+        {% for t in types %}
+        <div class="col-md-2 mb-2">
+            <div class="card p-3 summary-card">
+                <div class="summary-title">{{ t }}</div>
+
+                <div class="summary-value
+                    {% if t == 'Software' %}value-software
+                    {% elif t == 'Hardware' %}value-hardware
+                    {% elif t == 'Network' %}value-network
+                    {% else %}value-other{% endif %}">
+                    {{ grand_total["items"][t] }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+
+    <!-- ================= Table ================= -->
+    <div class="card mb-4">
+        <div class="card-header">
+            📊 ตารางสรุปงานแยกตามหน่วยงาน
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>หน่วยงาน</th>
+                            {% for t in types %}
+                                <th>{{ t }}</th>
+                            {% endfor %}
+                            <th>รวม</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for dept, data in summary.items() %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="fw-semibold text-center">
+                                {{ dept }}
+                            </td>
+                            {% for t in types %}
+                                <td>{{ data["items"][t] }}</td>
+                            {% endfor %}
+                            <td class="fw-bold">{{ data.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <th colspan="2">รวมทั้งหมด</th>
+                            {% for t in types %}
+                                <th>{{ grand_total["items"][t] }}</th>
+                            {% endfor %}
+                            <th>{{ grand_total.total }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   
+
+</div>
+
+</body>
+</html>

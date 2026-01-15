@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>รายการงานที่บันทึก</title>
+
+    <!-- Bootstrap (โครงสร้าง) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme ของเรา (โทน / สี / เงา) -->
+    <link rel="stylesheet" href="/static/theme.css">
+    <style>
+        /* === LIST PAGE – SaaS STYLE (จาก report) === */
+
+        /* พื้นหลัง */
+        body {
+            background: linear-gradient(
+                180deg,
+                #eaf2ff 0%,
+                #f4f8ff 45%,
+                #ffffff 100%
+            );
+        }
+
+        /* กล่องหลัก */
+        .card {
+            background: linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #f9fbff 100%
+            );
+            border-radius: 18px;
+            border: 1px solid rgba(108,168,255,0.18);
+            box-shadow: 0 18px 40px rgba(59,130,246,0.12);
+        }
+
+        /* หัวการ์ด */
+        .card-header {
+            background: transparent;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* ตาราง */
+        .table th {
+            background: #f1f6ff;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        /* ปุ่ม action */
+        .btn-view {
+            background: #6ca8ff;
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        .btn-view:hover {
+            background: #4f8cff;
+        }
+
+        /* ===== CENTER TABLE HEAD & BODY ===== */
+            .table th,
+            .table td {
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .table tbody tr {
+                background: #ffffff;
+                box-shadow: 0 6px 16px rgba(59,130,246,0.10);
+                border-radius: 12px;
+            }
+
+            .table {
+                border-collapse: separate;
+                border-spacing: 0;
+                border-radius: 14px;
+                box-shadow: 0 10px 24px rgba(59,130,246,0.12);
+            }
+
+            .table thead th:first-child {
+                border-top-left-radius: 14px;
+            }
+
+            .table thead th:last-child {
+                border-top-right-radius: 14px;
+            }
+
+            /* ===== FIX TABLE TEXT ON iPad ===== */
+            @media (min-width: 768px) and (max-width: 1024px) {
+
+                /* บังคับไม่ให้ขึ้นบรรทัดใหม่ */
+                .table th,
+                .table td {
+                    white-space: nowrap;
+                    font-size: 14px;
+                    padding: 10px 8px;
+                }
+
+                /* ตัดข้อความยาวด้วย ... */
+                .table td {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .table td:nth-child(6) {
+                    white-space: normal;   /* ปัญหาที่เกิด อ่านได้ */
+                    max-width: 260px;
+                    text-align: left;
+                }
+
+                /* คอลัมน์ที่ควรแคบเป็นพิเศษ */
+                .table td:nth-child(1) { max-width: 90px; }   /* เลขงาน */
+                .table td:nth-child(2) { max-width: 120px; }  /* วัน-เวลารับงาน */
+                .table td:nth-child(6) { max-width: 110px; }  /* เลขครุภัณฑ์ */
+                .table td:nth-child(7) { max-width: 120px; }  /* วัน-เวลาปิดงาน */
+
+                .action-col {
+                    white-space: nowrap;
+                    overflow: visible;
+                    min-width: 120px;
+                }
+            }
+
+                .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+    </style>
+</head>
+
+<body>
+<div class="container mt-2 mb-5">
+
+    <!-- ================= CARD 1 : HEADER / CONTEXT ================= -->
+    <div class="card shadow mb-3">
+        <div class="card-body py-3">
+
+            {% if staff %}
+            <div class="alert alert-info py-2 mb-2">
+                กำลังแสดงงานของ <strong>{{ staff }}</strong>
+                {% if date_from and date_to %}
+                    ระหว่างวันที่ {{ date_from }} – {{ date_to }}
+                {% endif %}
+                <a href="/list" class="ms-2">ล้างตัวกรอง</a>
+            </div>
+            {% endif %}
+
+            <h4 class="mb-0">📋 รายการงานที่บันทึก</h4>
+
+        </div>
+    </div>
+
+    <!-- ================= CARD 2 : SEARCH / FILTER ================= -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body py-3">
+
+            <form method="get">
+
+                <!-- แถวเดียว เรียบ ๆ -->
+                <div class="row g-2 align-items-center">
+
+                    <div class="col-lg-4">
+                        <input type="text"
+                            name="q"
+                            class="form-control"
+                            placeholder="ค้นหาเลขงาน / หน่วยงาน / ผู้แจ้ง / ปัญหา"
+                            value="{{ keyword }}">
+                    </div>
+
+                    <div class="col-lg-2">
+                        <select name="job_type" class="form-select">
+                            <option value="">ประเภทงาน</option>
+                            <option value="Software" {% if job_type == 'Software' %}selected{% endif %}>Software</option>
+                            <option value="Hardware" {% if job_type == 'Hardware' %}selected{% endif %}>Hardware</option>
+                            <option value="Network" {% if job_type == 'Network' %}selected{% endif %}>Network</option>
+                            <option value="Other" {% if job_type == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <select name="staff" class="form-select">
+                            <option value="">เจ้าหน้าที่</option>
+                            <option value="นนท์ณพัฒน์ กันตพลอิทธิ"
+                                {% if staff=="นนท์ณพัฒน์ กันตพลอิทธิ" %}selected{% endif %}>
+                                นนท์ณพัฒน์ กันตพลอิทธิ
+                            </option>
+                            <option value="ชัยวุฒิ ศรีแก้ว"
+                                {% if staff=="ชัยวุฒิ ศรีแก้ว" %}selected{% endif %}>
+                                ชัยวุฒิ ศรีแก้ว
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <input type="date"
+                            name="date_from"
+                            class="form-control"
+                            value="{{ date_from }}">
+                    </div>
+
+                    <div class="col-lg-2">
+                        <input type="date"
+                            name="date_to"
+                            class="form-control"
+                            value="{{ date_to }}">
+                    </div>
+
+                </div>
+
+                <!-- ปุ่ม -->
+                <div class="d-flex justify-content-end gap-2 mt-2">
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        ค้นหา
+                    </button>
+                    <a href="/list" class="btn btn-outline-secondary btn-sm px-4">
+                        รีเซ็ต
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+
+
+    <!-- ================= CARD 3 : TABLE ================= -->
+    <div class="card shadow">
+        <div class="card-body pt-3">
+
+            <div class="table-responsive">
+
+                <!-- 🔽 ตารางเดิมของเฟต (ไม่ต้องแก้ logic) -->
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>เลขงาน</th>
+                            <th>วันที่</th>
+                            <th>หน่วยงาน</th>
+                            <th>ประเภท</th>
+                            <th>ปัญหา</th>
+                            <th>วิธีแก้</th>
+                            <th>ผู้แจ้ง</th>
+                            <th class="text-center">การทำงาน</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in reports %}
+                        <tr>
+                            <td>{{ r[1] }}</td>
+                            <td>{{ format_date_th(r[2]) }}</td>
+                            <td>{{ get_department_full(r[3]) }}</td>
+                            <td>{{ r[4] }}</td>
+                            <td>{{ r[5] }}</td>
+                            <td>{{ r[6] }}</td>
+                            <td>{{ r[7] }}</td>
+                            <!-- ✅ การทำงาน -->
+                            <td class="text-center action-col">
+                                <!-- ดูรายละเอียด -->
+                                <a href="/view/{{ r[0] }}"
+                                class="btn btn-sm btn-view me-1"
+                                title="ดูรายละเอียด">
+                                    👁
+                                </a>
+
+                                <!-- แก้ไข -->
+                                <a href="/edit/{{ r[0] }}"
+                                class="btn btn-sm btn-outline-primary me-1"
+                                title="แก้ไข">
+                                    ✏️
+                                </a>
+
+                                <!-- คัดลอก -->
+                                <a href="/copy/{{ r[0] }}"
+                                class="btn btn-sm btn-outline-secondary me-1"
+                                title="คัดลอกงาน">
+                                    📄
+                                </a>
+
+                                <!-- ลบ -->
+                                <form action="/delete/{{ r[0] }}"
+                                    method="post"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('ยืนยันการลบงานนี้?');">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            title="ลบ">
+                                        🗑
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <div class="d-flex justify-content-center gap-3 my-4">
+
+        <a href="/" class="btn btn-secondary px-4 py-2">
+            ⬅ กลับเมนูหลัก
+        </a>
+
+        <a href="/report-summary"
+        class="btn btn-primary px-5 py-2 rounded-pill shadow-sm">
+            📊 รายงานสรุป
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ===== SUCCESS MODAL ===== -->
+<div class="modal fade" id="successModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">ทำรายการสำเร็จ</h5>
+        <button type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center fs-5">
+        <p id="successMessage">สำเร็จ</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button class="btn btn-success px-4"
+                data-bs-dismiss="modal">ตกลง</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% if request.args.get('success') %}
+<script>
+  const modal = new bootstrap.Modal(
+      document.getElementById('successModal')
+  );
+  const msg = document.getElementById('successMessage');
+
+  {% if request.args.get('success') == 'save' %}
+    msg.innerText = "บันทึกงานเรียบร้อยแล้ว";
+  {% elif request.args.get('success') == 'edit' %}
+    msg.innerText = "แก้ไขข้อมูลงานเรียบร้อยแล้ว";
+  {% elif request.args.get('success') == 'delete' %}
+    msg.innerText = "ลบงานเรียบร้อยแล้ว";
+  {% endif %}
+
+  modal.show();
+</script>
+{% endif %}
+
+
+
+</body>
+</html>

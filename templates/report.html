@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>แบบฟอร์มรับแจ้งปัญหา</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme กลาง -->
+    <link rel="stylesheet" href="/static/theme.css">
+
+    <style>
+        /* ===== PAGE BACKGROUND ===== */
+        body {
+            background:
+                linear-gradient(
+                    180deg,
+                    #eaf2ff 0%,
+                    #f4f8ff 45%,
+                    #ffffff 100%
+                );
+            min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1f2937;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(rgba(108,168,255,0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1100px;
+            padding-top: 32px;
+            padding-bottom: 48px;
+        }
+
+        /* ===== DASHBOARD HEADER ===== */
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 20px 24px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(108,168,255,0.15);
+            margin-bottom: 32px;
+        }
+
+        .report-header h2 {
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+
+        /* ===== MODERN LINK BUTTON ===== */
+        .btn-report-link {
+            background: rgba(108,168,255,0.15);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all .2s ease;
+        }
+
+        .btn-report-link:hover {
+            background: rgba(108,168,255,0.28);
+            transform: translateY(-1px);
+            color: var(--primary);
+        }
+
+        /* ===== SECTION BOX ===== */
+        .section-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px 24px 24px 28px;
+            margin-bottom: 26px;
+            border: 1px solid var(--border);
+            position: relative;
+            box-shadow: 0 14px 30px rgba(108,168,255,0.12);
+            transition: all .2s ease;
+        }
+
+        .section-box::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .section-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(108,168,255,0.18);
+        }
+
+        .section-box h5 {
+            color: var(--primary);
+            font-size: 16px;
+            letter-spacing: -0.2px;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px dashed rgba(108,168,255,0.3);
+        }
+        .section-box::before {
+            content: "";
+            position: absolute;
+            top: 18px;
+            left: 0;
+            width: 4px;
+            height: 48px;
+            border-radius: 4px;
+            background: linear-gradient(
+                180deg,
+                #60a5fa,
+                #3b82f6
+            );
+            opacity: 0.85;
+        }
+        .section-box h5 {
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1e3a8a;
+        }
+
+
+
+        /* ===== FORM ===== */
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        textarea {
+            border-radius: 10px;
+            border-color: var(--border);
+            padding: 10px 12px;
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary);
+            background-color: #fdfefe;
+        }
+
+        .form-control:focus::placeholder {
+            color: #c7cdd8;
+        }
+
+        /* ===== SIGNATURE ===== */
+        #signature-pad {
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            width: 100%;
+            height: 200px;
+            background: #ffffff;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn {
+            transition: all .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #6ca8ff, #4f8cff);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+        }
+
+        /* =========================
+        RESPONSIVE – MOBILE FIRST
+        ========================= */
+
+        /* 📱 Mobile */
+        @media (max-width: 576px) {
+
+            body {
+                font-size: 15px;
+            }
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            /* Header */
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 16px;
+            }
+
+            .report-header h2 {
+                font-size: 20px;
+                line-height: 1.3;
+            }
+
+            /* Section */
+            .section-box {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .section-box h5 {
+                font-size: 15px;
+            }
+
+            /* Form */
+            label {
+                font-size: 14px;
+            }
+
+            .form-control,
+            .form-select,
+            textarea {
+                font-size: 16px;      /* กัน iOS zoom */
+                padding: 12px;
+            }
+
+            /* Button */
+            .btn {
+                width: 100%;
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            /* Signature */
+            canvas#signature-pad {
+                height: 160px;
+            }
+        }
+
+        /* 📱 Tablet / iPad */
+        @media (min-width: 577px) and (max-width: 992px) {
+
+            .container {
+                max-width: 92%;
+            }
+
+            .report-header h2 {
+                font-size: 22px;
+            }
+
+            .section-box {
+                padding: 20px;
+            }
+        }
+
+        /* =========================
+        STICKY SUBMIT BUTTON
+        ========================= */
+
+        .submit-wrapper {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        /* 📱 Mobile only */
+        @media (max-width: 576px) {
+
+            .submit-wrapper {
+                position: sticky;
+                bottom: 0;
+                background: #ffffff;
+                padding: 12px;
+                margin: 0;
+                border-top: 1px solid rgba(0,0,0,0.08);
+                z-index: 10;
+            }
+
+            .submit-btn {
+                width: 100%;
+                font-size: 16px;
+                padding: 14px;
+                border-radius: 12px;
+            }
+        }
+
+        /* =========================
+        SECTION WOW INTERACTION
+        ========================= */
+
+        .section-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            transition: 
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+            border: 1px solid rgba(0,0,0,0.04);
+            position: relative;
+        }
+
+        /* Hover / Focus */
+        .section-box:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                0 18px 40px rgba(59,130,246,0.12),
+                0 4px 12px rgba(0,0,0,0.06);
+            border-color: rgba(59,130,246,0.25);
+        }
+
+        /* =========================
+        INPUT SIZE CONTROL
+        ========================= */
+
+        .input-sm {
+            max-width: 180px;
+        }
+
+        .input-md {
+            max-width: 320px;
+        }
+
+        .input-lg {
+            max-width: 100%;
+        }
+
+        /* มือถือ: ทุกช่องเต็มจอ */
+        @media (max-width: 576px) {
+            .input-sm,
+            .input-md {
+                max-width: 100%;
+            }
+        }
+        
+        /* =========================
+        SELECT SIZE CONTROL
+        ========================= */
+
+        .select-sm {
+            max-width: 260px;
+        }
+
+        /* มือถือ: ให้เต็มจอเหมือนเดิม */
+        @media (max-width: 576px) {
+            .select-sm {
+                max-width: 100%;
+            }
+        }
+
+
+
+
+
+        
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="report-header">
+        <div>
+            <h2>แบบฟอร์มรับแจ้งปัญหา CM</h2>
+            <div class="text-muted">บันทึกข้อมูลการรับแจ้งและการดำเนินงาน</div>
+        </div>  
+        <a href="/list" class="btn-report-link">ดูรายงานทั้งหมด →</a>
+    </div>
+
+    <form method="POST" action="/report" onsubmit="saveSignature()">
+
+        <!-- รับแจ้ง -->
+        <div class="section-box">
+            <h5>ข้อมูลรับแจ้ง</h5>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label>วันที่รับแจ้ง</label>
+                    <input type="date" name="receive_date" class="form-control input-sm">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>เวลารับแจ้ง</label>
+                    <input type="time" name="receive_time" class="form-control input-sm">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>หน่วยงาน</label>
+                <select name="department"
+                        class="form-select select-sm select-center">
+                    <option value="">-- เลือกหน่วยงาน --</option>
+                    <option>กกม.</option>
+                    <option>สปท.</option>
+                    <option>กตน.</option>
+                    <option>กพร.</option>
+                    <option>กสส.</option>
+                    <option>กยผ.</option>
+                    <option>กสป.</option>
+                    <option>สชง.</option>
+                    <option>กสร.</option>
+                    <option>กพส.</option>
+                    <option>สคพ.</option>
+                    <option>กชช.</option>
+                    <option>ศพท.</option>
+                    <option>กงค.</option>
+                    <option>กบค.</option>
+                    <option>กชอ.</option>
+                    <option>กบพ.</option>
+                    <option>ห้องประชุม</option>
+                    <option>ห้องอธิบดี</option>
+                    <option>ห้องรองอธิบดี</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>ผู้แจ้ง</label>
+                <input
+                    type="text"
+                    name="reporter"
+                    class="form-control"
+                    required
+                >
+            </div>
+            
+        </div>
+
+        <!-- รายละเอียด -->
+        <div class="section-box">
+            <h5>รายละเอียดงาน</h5>
+
+            <div class="row">
+            <div class="col-md-6">
+            <label>ประเภทงาน</label>
+            <select name="job_type"
+                class="form-select select-sm select-center">
+                    <option value="">-- เลือกประเภทงาน --</option>
+                    <option>Software</option>
+                    <option>Hardware</option>
+                    <option>Network</option>
+                    <option>Other</option>
+                </select>
+
+            </div>
+
+            <div class="col-md-6">
+                    <label>หมายเลขครุภัณฑ์</label>
+                        <input type="text"
+                            name="asset_no"
+                            class="form-control input-md">
+            </div>
+
+            <div class="mb-3">
+                <label>อาการ / ปัญหา</label>
+                <textarea name="problem" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>วิธีแก้ไข</label>
+                <textarea name="solution" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+        <!-- ปิดงาน -->
+        <div class="section-box">
+            <h5>การปิดงาน</h5>
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label>วันที่เสร็จ</label>
+                    <input type="date" name="complete_date" class="form-control input-sm">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label>เวลาเสร็จ</label>
+                    <input type="time" name="complete_time" class="form-control input-sm">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>หมายเหตุปิดงาน</label>
+                    <input type="text" name="close_note" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <!-- ลายเซ็น -->
+        <div class="section-box">
+            <h5>ยืนยันการปิดงาน</h5>
+
+            <label>ลายเซ็นผู้ตรวจสอบงาน</label>
+            <canvas id="signature-pad"></canvas>
+
+            <div class="mt-2">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearSignature()">
+                    ล้างลายเซ็น
+                </button>
+            </div>
+
+            <input type="hidden" name="signature" id="signature">
+
+            <div class="mt-3">
+                <label>ชื่อผู้ปฏิบัติงาน</label>
+                <select name="confirm_name"
+                        class="form-select select-sm"
+                        required>
+                    <option value="">-- เลือกผู้ยืนยัน --</option>
+                    <option value="นนท์ณพัฒน์ กันตพลอิทธิ">
+                        นนท์ณพัฒน์ กันตพลอิทธิ
+                    </option>
+                    <option value="คนที่2">
+                        ชัยวุฒิ ศรีแก้ว
+                    </option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- SUBMIT -->
+        <div class="submit-wrapper">
+            <button type="submit" class="btn btn-primary submit-btn">
+                บันทึกข้อมูล
+            </button>
+            <a href="/" class="btn btn-secondary">⬅ กลับเมนูหลัก</a>
+        </div>
+
+        
+
+    </form>
+</div> 
+
+<script>
+const canvas = document.getElementById("signature-pad");
+const ctx = canvas.getContext("2d");
+let drawing = false;
+
+function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+// กันจอเลื่อนบนมือถือ
+canvas.style.touchAction = "none";
+
+function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const point = e.touches ? e.touches[0] : e;
+    return {
+        x: point.clientX - rect.left,
+        y: point.clientY - rect.top
+    };
+}
+
+function startDraw(e) {
+    e.preventDefault();
+    drawing = true;
+    ctx.beginPath();
+    const p = getPos(e);
+    ctx.moveTo(p.x, p.y);
+}
+
+function draw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#1f2937";
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+}
+
+function endDraw() {
+    drawing = false;
+    ctx.beginPath();
+    saveSignature();
+}
+
+// Mouse
+canvas.addEventListener("mousedown", startDraw);
+canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mouseup", endDraw);
+
+// Touch (มือถือ)
+canvas.addEventListener("touchstart", startDraw);
+canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchend", endDraw);
+
+function clearSignature() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById("signature").value = "";
+}
+
+function saveSignature() {
+    document.getElementById("signature").value = canvas.toDataURL("image/png");
+}
+</script>
+
+
+</body>
+</html>

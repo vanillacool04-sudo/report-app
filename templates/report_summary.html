@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>รายงานสรุปงาน</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/theme.css">
+    <style>
+        body {
+            background-color: #eef2f7;
+            font-family: "Sarabun", system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        .card-header {
+            background-color: #1f3a5f;
+            color: white;
+        }
+        table th {
+            background-color: #1f3a5f;
+            color: white;
+        }
+        table th, table td {
+            text-align: center !important;
+            vertical-align: middle !important;
+        }
+        .summary-card h6 {
+            font-size: 14px;
+        }
+        .summary-card h2 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        /* ===== REPORT SUMMARY – SAME TONE ===== */
+
+        /* กล่องหลัก */
+        .card,
+        .section-box {
+            background: linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #f9fbff 100%
+            );
+            border-radius: 18px;
+            border: 1px solid rgba(108, 168, 255, 0.18);
+            box-shadow: 0 18px 40px rgba(59, 130, 246, 0.12);
+        }
+
+        /* หัวการ์ด */
+        .card-header {
+            background: transparent;
+            color: #1e3a8a;
+            font-weight: 600;
+            border-bottom: none;
+        }
+
+        /* ตาราง */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        /* เส้นคั่นแนวขวาง */
+        .table tbody tr:not(:last-child) td,
+        .table tbody tr:not(:last-child) th {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+        }
+
+        /* hover เบา ๆ */
+        .table tbody tr:hover td,
+        .table tbody tr:hover th {
+            background-color: rgba(108, 168, 255, 0.05);
+        }
+
+        /* ตัวเลขสรุป (ถ้ามี) */
+        .summary-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        /* ===== SUMMARY CHART SIZE ===== */
+        .chart-wrapper {
+            width: 100%;        /* ⭐ สำคัญ */
+            max-width: none;    /* ⭐ เอาออก */
+            height: 320px;      /* เพิ่มความสูงนิดนึง */
+        }
+
+        
+    </style>
+</head>
+
+<body>
+
+<div class="container mt-1 mb-5">
+    <div class="card shadow">
+
+        <div class="card-header">
+            <h4 class="mb-0">📊 รายงานสรุปงาน</h4>
+        </div>
+
+        <div class="card-body">
+
+            <!-- ================= ฟอร์มเลือกช่วงวันที่ ================= -->
+            <form method="get" class="row g-2 mb-3 align-items-center">
+
+                <div class="col-md-3">
+                    <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+                </div>
+
+                <div class="col-md-3">
+                    <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-primary">🔍 ดูรายงาน</button>
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <a href="/" class="btn btn-secondary">⬅ หน้าหลัก</a>
+                </div>
+
+                {% if is_search %}
+                <div class="col-md-2 d-grid">
+                    <a
+                    href="/export-excel?date_from={{ date_from }}&date_to={{ date_to }}"
+                    class="btn btn-success">
+                    📤 Export Excel
+                    </a>
+                </div>
+                {% endif %}
+                
+                
+
+            </form>
+
+            <!-- ================= ช่วงวันที่ ================= -->
+            {% if is_search %}
+                <p class="text-muted text-center mb-4">
+                    ช่วงวันที่: {{ date_from }} ถึง {{ date_to }}
+                </p>
+            {% else %}
+                <p class="text-muted text-center mb-4">
+                    🔍 กรุณาเลือกช่วงวันที่แล้วกด “ดูรายงาน”
+                </p>
+            {% endif %}
+
+            {% if is_search %}
+
+            <!-- ================= สรุปตัวเลข ================= -->
+            <div class="row mb-4 text-center justify-content-center">
+                <div class="col-md-2">
+                    <div class="card shadow-sm summary-card">
+                        <div class="card-body">
+                            <h6>ทั้งหมด</h6>
+                            <h2 class="text-dark fw-bold" style="font-size:28px;">{{ total }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="card shadow-sm summary-card">
+                        <div class="card-body">
+                            <h6>Software</h6>
+                            <h2 class="text-primary">{{ software }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="card shadow-sm summary-card">
+                        <div class="card-body">
+                            <h6>Hardware</h6>
+                            <h2 class="text-danger">{{ hardware }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="card shadow-sm summary-card">
+                        <div class="card-body">
+                            <h6>Network</h6>
+                            <h2 class="text-success">{{ network }}</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="card shadow-sm summary-card">
+                        <div class="card-body">
+                            <h6>Other</h6>
+                            <h2 class="text-secondary">{{ other }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= กราฟ ================= -->
+            <div class="card shadow mb-4">
+                <div class="card-header">📈 กราฟสรุปงานแยกตามหน่วยงาน</div>
+                <div class="card-body">
+                    <div class="chart-wrapper">
+                        <canvas id="summaryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= ตาราง ================= -->
+            <div class="table-responsive-horizontal">
+            <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ลำดับ</th>
+                            <th>วันที่-เวลา</th>
+                            <th>หน่วยงาน</th>
+                            <th>ประเภทงาน</th>
+                            <th>ปัญหา</th>
+                            <th>วิธีแก้ไข</th>
+                            <th>ผู้แจ้ง</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in rows %}
+                        <tr>
+                            <td class="fw-bold">{{ loop.index }}</td>
+                            <td>{{ format_date_th(r[0]) if r[0] else "-" }}</td>
+                            <td>{{ r[1] }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if r[2]=='Software' %}bg-primary
+                                    {% elif r[2]=='Hardware' %}bg-danger
+                                    {% elif r[2]=='Network' %}bg-success
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ r[2] }}
+                                </span>
+                            </td>
+                            <td>{{ r[3] }}</td>
+                            <td>{{ r[4] }}</td>
+                            <td>{{ r[5] }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-muted">ไม่พบข้อมูล</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                </div>
+            </div>
+            <!-- ================= ปุ่มไปหน้าสรุปรายเดือน ================= -->
+            <div class="d-flex justify-content-center mb-4">
+                <a
+                    href="/report-monthly-summary?date_from={{ date_from }}&date_to={{ date_to }}"
+                    class="btn btn-outline-primary px-4"
+                >
+                    📋 ดูตารางสรุปรายเดือน
+                </a>
+            </div>
+
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% if is_search %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const chartData = {{ chart_data | tojson }};
+const ctx = document.getElementById('summaryChart').getContext('2d');
+
+/* สร้าง gradient ให้แท่งดูมีมิติ */
+function makeGradient(top, bottom) {
+    const g = ctx.createLinearGradient(0, 0, 0, 260);
+    g.addColorStop(0, top);
+    g.addColorStop(1, bottom);
+    return g;
+}
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: chartData.labels,
+        datasets: [
+            {
+                label: 'Software',
+                data: chartData.software,
+                barThickness: 18,
+                maxBarThickness: 22,
+                borderRadius: 6,
+                borderSkipped: false,
+                backgroundColor: makeGradient('#e0f2fe', '#60a5fa'), // ✅ ใส่ ,
+                borderColor: '#52bbf0',
+                borderWidth: 1
+            },
+
+            {
+                label: 'Hardware',
+                data: chartData.hardware,
+                barThickness: 18,
+                maxBarThickness: 22,
+                borderRadius: 6,
+                borderSkipped: false,
+                backgroundColor: makeGradient('#fee2e2', '#ef4444'), // ✅
+                borderColor: '#b91c1c',
+                borderWidth: 1
+            },
+
+           {
+                label: 'Network',
+                data: chartData.network,
+                barThickness: 18,
+                maxBarThickness: 22,
+                borderRadius: 6,
+                borderSkipped: false,
+                backgroundColor: makeGradient('#dcfce7', '#398e58'), // ✅
+                borderColor: '#13522a',
+                borderWidth: 1
+            },
+
+            {
+                label: 'Other',
+                data: chartData.other,
+                barThickness: 18,
+                maxBarThickness: 22,
+                borderRadius: 6,
+                borderSkipped: false,
+                backgroundColor: makeGradient('#e5e7eb', '#6b7280'), // ✅
+                borderColor: '#374151',
+                borderWidth: 1
+            }
+
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                stacked: false,
+                ticks: {
+                    maxRotation: 0,
+                    autoSkip: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(148,163,184,0.3)' },
+                ticks: { stepSize: 1 }
+            }
+        }
+    }
+});
+</script>
+
+{% endif %}
+
+</body>
+</html>

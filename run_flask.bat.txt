@@ -1,0 +1,3 @@
+@echo off
+cd /d C:\REPORT_APP_TESTCSS
+python app.py

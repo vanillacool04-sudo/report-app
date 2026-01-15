@@ -1,0 +1,777 @@
+/* ===============================
+   THEME : Soft Sky Blue
+   =============================== */
+
+:root {
+  --primary: #6CA8FF;
+  --bg: #F5F9FF;
+  --card: #FFFFFF;
+  --border: #E6EDFA;
+  --text-main: #1F2937;
+  --text-muted: #94A3B8;
+}
+
+/* พื้นหลังทั้งเว็บ */
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* กล่องทั่วไป */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px rgba(108,168,255,.12);
+}
+
+/* หัวการ์ด */
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* ปุ่มหลัก */
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  border-radius: 10px;
+}
+
+.btn-primary:hover {
+  background: #5a97f2;
+  border-color: #5a97f2;
+}
+
+/* ปุ่มรอง */
+.btn-secondary {
+  background: #EEF4FF;
+  border-color: #EEF4FF;
+  color: var(--text-main);
+  border-radius: 10px;
+}
+
+/* ===== Report Page Base ===== */
+.page-report {
+  background: var(--bg);
+  padding-bottom: 48px;
+}
+
+.page-report .container {
+  max-width: 1100px;
+}
+
+.select-center {
+  text-align: center;
+  text-align-last: center;
+}
+
+/* =====================================================
+   FORCE SaaS FORM STYLE (override report.html styles)
+   ===================================================== */
+
+.section-box {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f9fbff 100%
+  ) !important;
+
+  border-radius: 18px !important;
+  border: 1px solid rgba(108,168,255,0.18) !important;
+
+  box-shadow:
+    0 10px 28px rgba(59,130,246,0.10),
+    0 3px 8px rgba(0,0,0,0.04) !important;
+
+  padding: 24px 26px !important;
+}
+
+
+    /* ===== HORIZONTAL ROW SEPARATOR (LIST + VIEW) ===== */
+    .table tbody tr:not(:last-child) td,
+    .table tbody tr:not(:last-child) th {
+        border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+    }
+
+    .table tbody tr:hover td,
+    .table tbody tr:hover th {
+        background-color: rgba(108, 168, 255, 0.05);
+    }
+
+    /* ===== HORIZONTAL SCROLL TABLE (REPORT SUMMARY / LIST STYLE) ===== */
+    .table-responsive-horizontal {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* iPad smooth */
+        width: 100%;
+    }
+
+    /* กันตารางถูกบีบ */
+    .table-responsive-horizontal table {
+        min-width: 1100px; /* ปรับได้ตามจำนวนคอลัมน์ */
+    }
+
+    /* ไม่ให้ตัวหนังสือแตกบรรทัดมั่ว */
+    .table th,
+    .table td {
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .table-responsive-horizontal::after {
+    content: "⇠ เลื่อนดูเพิ่มเติม ⇢";
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #64748b;
+    padding: 6px 0;
+}
+
+
+    /* ===== VERTICAL COLUMN SEPARATOR ===== */
+    .table th:not(:last-child),
+    .table td:not(:last-child) {
+        border-right: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    /* ===== FIX SUMMARY CARD JUMPING (iPad Safe) ===== */
+    .summary-card {
+        height: 96px;              /* fix ความสูง */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* กันตัวเลขทำให้การ์ดขยับ */
+    .summary-number {
+        min-width: 2.5ch;           /* กันเลข 1–99 */
+        display: inline-block;
+        text-align: center;
+    }
+
+    /* หัวข้อ */
+    .summary-card h6 {
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+/* =========================
+   BACK BUTTON (TOP RIGHT)
+   ========================= */
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 8px 18px;
+        border-radius: 999px;
+
+        background: rgba(108,168,255,0.15);
+        color: #1e3a8a;
+
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+
+        transition: 
+            background 0.25s ease,
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+        .btn-back:hover {
+            background: rgba(108,168,255,0.28);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(108,168,255,0.25);
+            color: #1e3a8a;
+        }
+
+        /* ===== ACTIVE (ตอนกด) ===== */
+    .btn-back:active {
+        background: #e5e7eb;      /* เทาอ่อน */
+        color: #374151;
+        transform: scale(0.97);
+        box-shadow: none;
+    }
+
+    /* =========================
+   REPORT HEADER (FOR IMPORT PAGE)
+   ========================= */
+
+.report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        background: #ffffff;
+        padding: 20px 24px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 40px rgba(108,168,255,0.15);
+
+        margin-bottom: 32px;
+    }
+
+    /* ===== CENTER ALL TABLE CONTENT ===== */
+    .table th,
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* SIZE CONTROL – GLOBAL */
+    .input-sm { max-width: 180px; }
+    .input-md { max-width: 320px; }
+    .input-lg { max-width: 100%; }
+
+    @media (max-width: 768px) {
+      .input-sm,
+      .input-md {
+        max-width: 100%;
+      }
+    }
+
+    /* VALUE BOX (VIEW PAGE) */
+    .value {
+      background: #ffffff;
+      border: 1px solid rgba(148,163,184,0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+    }
+
+    .value-muted {
+      color: #9ca3af;
+    }
+
+   
+        /* ===== PAGE BACKGROUND ===== */
+        body {
+            background:
+                linear-gradient(
+                    180deg,
+                    #eaf2ff 0%,
+                    #f4f8ff 45%,
+                    #ffffff 100%
+                );
+            min-height: 100vh;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1f2937;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(rgba(108,168,255,0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1100px;
+            padding-top: 32px;
+            padding-bottom: 48px;
+        }
+
+        /* ===== DASHBOARD HEADER ===== */
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            padding: 20px 24px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(108,168,255,0.15);
+            margin-bottom: 32px;
+        }
+
+        .report-header h2 {
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+
+        /* ===== MODERN LINK BUTTON ===== */
+        .btn-report-link {
+            background: rgba(108,168,255,0.15);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            transition: all .2s ease;
+        }
+
+        .btn-report-link:hover {
+            background: rgba(108,168,255,0.28);
+            transform: translateY(-1px);
+            color: var(--primary);
+        }
+
+        /* ===== SECTION BOX ===== */
+        .section-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px 24px 24px 28px;
+            margin-bottom: 26px;
+            border: 1px solid var(--border);
+            position: relative;
+            box-shadow: 0 14px 30px rgba(108,168,255,0.12);
+            transition: all .2s ease;
+        }
+
+        .section-box::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .section-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(108,168,255,0.18);
+        }
+
+        .section-box h5 {
+            color: var(--primary);
+            font-size: 16px;
+            letter-spacing: -0.2px;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px dashed rgba(108,168,255,0.3);
+        }
+        .section-box::before {
+            content: "";
+            position: absolute;
+            top: 18px;
+            left: 0;
+            width: 4px;
+            height: 48px;
+            border-radius: 4px;
+            background: linear-gradient(
+                180deg,
+                #60a5fa,
+                #3b82f6
+            );
+            opacity: 0.85;
+        }
+        .section-box h5 {
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1e3a8a;
+        }
+
+
+
+        /* ===== FORM ===== */
+        label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        textarea {
+            border-radius: 10px;
+            border-color: var(--border);
+            padding: 10px 12px;
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: var(--primary);
+            background-color: #fdfefe;
+        }
+
+        .form-control:focus::placeholder {
+            color: #c7cdd8;
+        }
+
+        /* ===== SIGNATURE ===== */
+        #signature-pad {
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            width: 100%;
+            height: 200px;
+            background: #ffffff;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn {
+            transition: all .2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #6ca8ff, #4f8cff);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+        }
+
+        /* =========================
+        RESPONSIVE – MOBILE FIRST
+        ========================= */
+
+        /* 📱 Mobile */
+        @media (max-width: 576px) {
+
+            body {
+                font-size: 15px;
+            }
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            /* Header */
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 16px;
+            }
+
+            .report-header h2 {
+                font-size: 20px;
+                line-height: 1.3;
+            }
+
+            /* Section */
+            .section-box {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .section-box h5 {
+                font-size: 15px;
+            }
+
+            /* Form */
+            label {
+                font-size: 14px;
+            }
+
+            .form-control,
+            .form-select,
+            textarea {
+                font-size: 16px;      /* กัน iOS zoom */
+                padding: 12px;
+            }
+
+            /* Button */
+            .btn {
+                width: 100%;
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            /* Signature */
+            canvas#signature-pad {
+                height: 160px;
+            }
+        }
+
+        /* 📱 Tablet / iPad */
+        @media (min-width: 577px) and (max-width: 992px) {
+
+            .container {
+                max-width: 92%;
+            }
+
+            .report-header h2 {
+                font-size: 22px;
+            }
+
+            .section-box {
+                padding: 20px;
+            }
+        }
+
+        /* =========================
+        STICKY SUBMIT BUTTON
+        ========================= */
+
+        .submit-wrapper {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        /* 📱 Mobile only */
+        @media (max-width: 576px) {
+
+            .submit-wrapper {
+                position: sticky;
+                bottom: 0;
+                background: #ffffff;
+                padding: 12px;
+                margin: 0;
+                border-top: 1px solid rgba(0,0,0,0.08);
+                z-index: 10;
+            }
+
+            .submit-btn {
+                width: 100%;
+                font-size: 16px;
+                padding: 14px;
+                border-radius: 12px;
+            }
+        }
+
+        /* =========================
+        SECTION WOW INTERACTION
+        ========================= */
+
+        .section-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            transition: 
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+            border: 1px solid rgba(0,0,0,0.04);
+            position: relative;
+        }
+
+        /* Hover / Focus */
+        .section-box:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                0 18px 40px rgba(59,130,246,0.12),
+                0 4px 12px rgba(0,0,0,0.06);
+            border-color: rgba(59,130,246,0.25);
+        }
+
+        /* =========================
+        INPUT SIZE CONTROL
+        ========================= */
+
+        .input-sm {
+            max-width: 180px;
+        }
+
+        .input-md {
+            max-width: 320px;
+        }
+
+        .input-lg {
+            max-width: 100%;
+        }
+
+        /* มือถือ: ทุกช่องเต็มจอ */
+        @media (max-width: 576px) {
+            .input-sm,
+            .input-md {
+                max-width: 100%;
+            }
+        }
+        
+        /* =========================
+        SELECT SIZE CONTROL
+        ========================= */
+
+        .select-sm {
+            max-width: 260px;
+        }
+
+        /* มือถือ: ให้เต็มจอเหมือนเดิม */
+        @media (max-width: 576px) {
+            .select-sm {
+                max-width: 100%;
+            }
+        }
+
+        /* FIX DROPDOWN BEHIND CARD / SECTION */
+        .dropdown-menu {
+            z-index: 2000; /* สูงกว่า card, table, header */
+        }
+
+        /* อนุญาตให้ dropdown ล้นออกจาก section */
+        .section-box {
+            overflow: visible !important;
+        }
+
+        .report-header,
+        .section-box {
+            position: relative;
+            z-index: 1;
+        }
+
+        .dropdown-menu {
+            z-index: 2000;
+        }
+
+        .section-box {
+            overflow: visible !important;
+        }
+
+
+
+        /* ===== MODERN TABLE (จาก report_summary) ===== */
+
+        /* กล่องตาราง */
+        .section-box,
+        .card,
+        .table-box {
+            background: linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #f9fbff 100%
+            );
+            border-radius: 18px;
+            border: 1px solid rgba(108, 168, 255, 0.18);
+            box-shadow: 0 18px 40px rgba(59, 130, 246, 0.12);
+        }
+
+        /* ตาราง */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        /* หัวตาราง */
+        .table thead th {
+            background: transparent;
+            color: #1e3a8a;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+        }
+
+        /* เซลล์ */
+        .table th,
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+            border: none;
+        }
+
+        /* เส้นคั่นแถว */
+        .table tbody tr:not(:last-child) td {
+            border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+        }
+
+        /* hover */
+        .table tbody tr:hover td {
+            background-color: rgba(108, 168, 255, 0.05);
+        }
+
+        /* แถวรวม */
+        .table tfoot th {
+            background-color: rgba(96, 165, 250, 0.15);
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+        body {
+            font-family: "Prompt", "Segoe UI", Tahoma, sans-serif;
+        }
+
+        /* ===== Sticky Table Header ===== */
+        /* ❌ ไม่บังคับ scroll แล้ว */
+        .table-responsive {
+            overflow: visible;
+        }
+
+        /* ✅ หัวตารางติดกับการเลื่อนทั้งหน้า */
+        .table thead th {
+            position: sticky;
+            top: 0;          /* ถ้าไม่มี navbar ใช้ 0 */
+            z-index: 10;
+            background: linear-gradient(
+                180deg,
+                #f1f7ff 0%,
+                #e8f0ff 100%
+            );
+            box-shadow: inset 0 -1px 0 rgba(148,163,184,0.4);
+        }
+        
+
+        /* ===== Card Section ===== */
+        .section-card {
+            background: linear-gradient(
+                180deg,
+                #ffffff 0%,
+                #f9fbff 100%
+            );
+            border-radius: 20px;
+            border: 1px solid rgba(108,168,255,0.22);
+            box-shadow: 0 22px 48px rgba(59,130,246,0.14);
+            padding: 20px;
+            margin-top: 32px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== Page Header Card ===== */
+        .page-title-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(108,168,255,0.25);
+            box-shadow: 0 18px 40px rgba(59,130,246,0.15);
+            text-align: center;
+        }
+
+        .page-title-card h3 {
+            margin: 0;
+            font-weight: 600;
+            color: #1e3a8a;
+            letter-spacing: -0.3px;
+        }
+
+        .page-title-card .subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .list-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .card-body {
+            padding-top: 1rem;
+        }
+

@@ -1,0 +1,6 @@
+UPDATE reports
+SET
+    confirm_name = 'สมชาย ใจดี',
+    staff_name = 'สมชาย ใจดี'
+WHERE confirm_name = 'ชัยวุฒิ ศรีแก้ว'
+   OR staff_name = 'ชัยวุฒิ ศรีแก้ว';
