@@ -1,0 +1,7 @@
+cd "C:\Users\Fate\Desktop\report_app - testCSS"
+
+
+
+git add .
+git commit -m "ใส่สิ่งที่เราแก้"
+git push
