@@ -509,14 +509,21 @@ def export_attendance_excel():
 
 
         # ===== ลายเซ็น =====
-        sign_row = start_row + last_day + 1
+        sign_row = start_row + last_day + 2
         ws.merge_cells(f"B{sign_row}:F{sign_row}")
         ws.row_dimensions[sign_row].height = 24
         ws[f"B{sign_row}"] = "ลายเซ็นเจ้าหน้าที่ ............................................................."
         ws[f"B{sign_row}"].alignment = center
         ws[f"B{sign_row}"].font = Font(size=11)
 
-    # ===== ส่งไฟล์ =====
+        name_row = sign_row + 1
+
+        ws.merge_cells(f"B{name_row}:F{name_row}")
+        ws.row_dimensions[name_row].height = 22
+        ws[f"B{name_row}"] = "(....................................................................................)"
+        ws[f"B{name_row}"].alignment = center
+        ws[f"B{name_row}"].font = Font(size=10)
+            # ===== ส่งไฟล์ =====
     stream = io.BytesIO()
     wb.save(stream)
     stream.seek(0)
@@ -2119,6 +2126,7 @@ def attendance_checkin():
 
 
 
+
 # ==================================================
 # เวลาออกงาน
 # ==================================================
@@ -2145,6 +2153,7 @@ def attendance_checkout():
     conn.close()
 
     return redirect(f"/attendance?staff_name={staff_name}")
+
 
 
 # ==================================================
