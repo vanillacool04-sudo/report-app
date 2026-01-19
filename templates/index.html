@@ -87,6 +87,19 @@
 </head>
 
 <body>
+    <form method="post"
+      action="/admin/delete_attendance_by_date"
+      onsubmit="return confirm('แน่ใจหรือไม่ว่าต้องการลบข้อมูล attendance วันนี้?');"
+      style="margin-top:20px;">
+
+  <label>เลือกวันที่ต้องการลบ:</label>
+  <input type="date" name="work_date" required>
+
+  <button type="submit" style="background:#c0392b;color:white;">
+    🗑️ ลบข้อมูล attendance
+  </button>
+</form>
+
 
 <div class="container mt-1 mb-5">
 

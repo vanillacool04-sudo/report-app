@@ -2384,6 +2384,35 @@ def unlock():
 
     return render_template("unlock.html")
 
+
+# ==================================================
+# ชั่วคราว
+# ==================================================
+
+import sqlite3
+from flask import request, redirect, url_for, flash
+
+DB_PATH = 'instance/report.db'  # <-- ชื่อ DB ของเธอ
+
+@app.route('/admin/delete_attendance_by_date', methods=['POST'])
+def delete_attendance_by_date():
+    work_date = request.form['work_date']
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM attendance WHERE work_date = ?",
+        (work_date,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    flash(f'ลบข้อมูล attendance วันที่ {work_date} เรียบร้อยแล้ว')
+    return redirect(url_for('index'))
+
+
 # ==================================================
 # reset สถานะ
 # ==================================================
