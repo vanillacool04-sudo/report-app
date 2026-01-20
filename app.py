@@ -9,6 +9,8 @@ import os
 import sqlite3
 from openpyxl.drawing.image import Image as XLImage
 
+
+
 def get_departments():
     conn = get_db()
     cur = conn.cursor()
@@ -2393,26 +2395,23 @@ def unlock():
 # ==================================================
 # ชั่วคราว
 # ==================================================
-@app.route("/admin/fix-time")
-def admin_fix_time():
-    conn = sqlite3.connect(DB_NAME)
+@app.route("/admin/force-830")
+def force_830():
+    conn = sqlite3.connect("report.db")
     cur = conn.cursor()
 
     cur.execute("""
         UPDATE attendance
         SET time_in = '08:30'
-        WHERE TRIM(staff_name) IN (
-            'นนท์ณพัฒน์ กันตพลอิทธิ',
-            'ชัยวุฒิ ศรีแก้ว',
-            'ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง'
-        )
+        WHERE time_in = '08:35'
     """)
 
     conn.commit()
     updated = cur.rowcount
     conn.close()
 
-    return f"แก้เวลาแล้ว {updated} แถว"
+    return f"เปลี่ยนเวลาเป็น 08:30 แล้ว {updated} รายการ"
+
 
 # ==================================================
 # reset สถานะ

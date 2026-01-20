@@ -1,12 +1,17 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, send_file
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from openpyxl import Workbook
 import base64
 import uuid
 import os
 import sqlite3
 from openpyxl.drawing.image import Image as XLImage
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
+
 
 def get_departments():
     conn = get_db()
@@ -2089,12 +2094,13 @@ def export_report_monthly_summary():
 def attendance_checkin():
     staff_name = request.form.get("staff_name")
 
-    # 🔒 กันชื่อว่าง
     if not staff_name:
         return redirect("/attendance")
 
-    work_date = datetime.now().strftime("%Y-%m-%d")
-    time_now = datetime.now().strftime("%H:%M")
+    now = datetime.now(ZoneInfo("Asia/Bangkok"))
+
+    work_date = now.strftime("%Y-%m-%d")
+    time_now = now.strftime("%H:%M")
 
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -2127,6 +2133,7 @@ def attendance_checkin():
 
 
 
+
 # ==================================================
 # เวลาออกงาน
 # ==================================================
@@ -2137,8 +2144,10 @@ def attendance_checkout():
     if not staff_name:
         return redirect("/attendance")
 
-    work_date = datetime.now().strftime("%Y-%m-%d")
-    time_now = datetime.now().strftime("%H:%M")
+    now = datetime.now(ZoneInfo("Asia/Bangkok"))
+
+    work_date = now.strftime("%Y-%m-%d")
+    time_now = now.strftime("%H:%M")
 
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -2383,6 +2392,31 @@ def unlock():
             )
 
     return render_template("unlock.html")
+
+
+# ==================================================
+# ชั่วคราว
+# ==================================================
+@app.route("/admin/fix-time")
+def admin_fix_time():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE attendance
+        SET time_in = '08:30'
+        WHERE TRIM(staff_name) IN (
+            'นนท์ณพัฒน์ กันตพลอิทธิ',
+            'ชัยวุฒิ ศรีแก้ว',
+            'ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง'
+        )
+    """)
+
+    conn.commit()
+    updated = cur.rowcount
+    conn.close()
+
+    return f"แก้เวลาแล้ว {updated} แถว"
 
 # ==================================================
 # reset สถานะ
