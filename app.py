@@ -6,6 +6,7 @@ import base64
 import uuid
 import os
 import sqlite3
+import pytz
 from openpyxl.drawing.image import Image as XLImage
 
 def get_departments():
@@ -2089,15 +2090,14 @@ def export_report_monthly_summary():
 def attendance_checkin():
     staff_name = request.form.get("staff_name")
 
-    # 🔒 กันชื่อว่าง
     if not staff_name:
         return redirect("/attendance")
-    
+
     tz = pytz.timezone("Asia/Bangkok")
     now = datetime.now(tz)
 
-    work_date = datetime.now().strftime("%Y-%m-%d")
-    time_now = datetime.now().strftime("%H:%M")
+    work_date = now.strftime("%Y-%m-%d")
+    time_now = now.strftime("%H:%M")
 
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
@@ -2130,6 +2130,7 @@ def attendance_checkin():
 
 
 
+
 # ==================================================
 # เวลาออกงาน
 # ==================================================
@@ -2140,8 +2141,11 @@ def attendance_checkout():
     if not staff_name:
         return redirect("/attendance")
 
-    work_date = datetime.now().strftime("%Y-%m-%d")
-    time_now = datetime.now().strftime("%H:%M")
+    tz = pytz.timezone("Asia/Bangkok")
+    now = datetime.now(tz)
+
+    work_date = now.strftime("%Y-%m-%d")
+    time_now = now.strftime("%H:%M")
 
     conn = sqlite3.connect(DB_NAME)
     cur = conn.cursor()
