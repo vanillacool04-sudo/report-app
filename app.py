@@ -2092,6 +2092,9 @@ def attendance_checkin():
     # 🔒 กันชื่อว่าง
     if not staff_name:
         return redirect("/attendance")
+    
+    tz = pytz.timezone("Asia/Bangkok")
+    now = datetime.now(tz)
 
     work_date = datetime.now().strftime("%Y-%m-%d")
     time_now = datetime.now().strftime("%H:%M")
