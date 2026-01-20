@@ -1,12 +1,12 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, send_file
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from openpyxl import Workbook
 import base64
 import uuid
 import os
 import sqlite3
-import pytz
 from openpyxl.drawing.image import Image as XLImage
 
 def get_departments():
@@ -2093,8 +2093,7 @@ def attendance_checkin():
     if not staff_name:
         return redirect("/attendance")
 
-    tz = pytz.timezone("Asia/Bangkok")
-    now = datetime.now(tz)
+    now = datetime.now(ZoneInfo("Asia/Bangkok"))
 
     work_date = now.strftime("%Y-%m-%d")
     time_now = now.strftime("%H:%M")
@@ -2141,8 +2140,7 @@ def attendance_checkout():
     if not staff_name:
         return redirect("/attendance")
 
-    tz = pytz.timezone("Asia/Bangkok")
-    now = datetime.now(tz)
+    now = datetime.now(ZoneInfo("Asia/Bangkok"))
 
     work_date = now.strftime("%Y-%m-%d")
     time_now = now.strftime("%H:%M")
