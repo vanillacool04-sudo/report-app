@@ -2393,8 +2393,25 @@ def unlock():
 # ==================================================
 # ชั่วคราว
 # ==================================================
+@app.route("/admin/fix-time")
+def admin_fix_time():
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
 
+    cur.execute("""
+        UPDATE attendance
+        SET time_in = '08:30'
+        WHERE staff_name IN (
+            'นนท์ณพัฒน์ กันตพลอิทธิ',
+            'ชัยวุฒิ ศรีแก้ว',
+            'ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง'
+        )
+    """)
 
+    conn.commit()
+    conn.close()
+
+    return "แก้เวลาเข้างานเป็น 08:30 เรียบร้อยแล้ว"
 
 # ==================================================
 # reset สถานะ
