@@ -2401,7 +2401,7 @@ def admin_fix_time():
     cur.execute("""
         UPDATE attendance
         SET time_in = '08:30'
-        WHERE staff_name IN (
+        WHERE TRIM(staff_name) IN (
             'นนท์ณพัฒน์ กันตพลอิทธิ',
             'ชัยวุฒิ ศรีแก้ว',
             'ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง'
@@ -2409,9 +2409,10 @@ def admin_fix_time():
     """)
 
     conn.commit()
+    updated = cur.rowcount
     conn.close()
 
-    return "แก้เวลาเข้างานเป็น 08:30 เรียบร้อยแล้ว"
+    return f"แก้เวลาแล้ว {updated} แถว"
 
 # ==================================================
 # reset สถานะ
