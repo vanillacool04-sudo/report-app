@@ -121,14 +121,16 @@
                 </div>
 
                 <div class="col-md-2 d-grid">
+                    <a href="/" class="btn btn-secondary">⬅ หน้าหลัก</a>
+                </div>
+
+                {% if is_search %}
+                <div class="col-md-2 d-grid">
                     <a href="/work-compare" class="btn btn-outline-primary">
                         📊 เปรียบเทียบงาน
                     </a>
                 </div>
-
-                <div class="col-md-2 d-grid">
-                    <a href="/" class="btn btn-secondary">⬅ หน้าหลัก</a>
-                </div>
+                {% endif %}
 
                 {% if is_search %}
                 <div class="col-md-2 d-grid">
