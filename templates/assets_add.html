@@ -123,10 +123,14 @@
 
                 <div class="col-md-4 mb-3">
                     <label>ตำแหน่ง</label>
-                    <input type="text"
-                           name="position"
-                           class="form-control input-md">
+                    <select name="position" class="form-select input-md" required>
+                        <option value="">-- เลือกตำแหน่ง --</option>
+                        <option value="ข้าราชการ">ข้าราชการ</option>
+                        <option value="พนักงานราชการ">พนักงานราชการ</option>
+                        <option value="จ้างเหมา">จ้างเหมา</option>
+                    </select>
                 </div>
+
 
                 <div class="col-md-4 mb-3">
                     <label>หน่วยงาน</label>

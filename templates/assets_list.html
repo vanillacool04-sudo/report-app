@@ -61,7 +61,7 @@
 
 <div class="container">
 
-    <!-- HEADER -->
+   <!-- HEADER -->
     <div class="report-header">
         <div>
             <h2>📦 {{ page_title }}</h2>
@@ -71,19 +71,21 @@
         </div>
 
         <div class="d-flex gap-2">
+
+            <!-- form รีเซ็ต (ครอบแค่ปุ่มเดียว) -->
             <form method="post"
                 action="/assets/reset-check-status"
                 onsubmit="return confirmReset();"
                 class="d-inline">
+                <button type="submit" class="btn btn-warning">
+                    🔄 เริ่มรอบตรวจสอบใหม่
+                </button>
+            </form>
 
-            <button type="submit" class="btn btn-warning">
-                🔄 เริ่มรอบตรวจสอบใหม่
-            </button>
-
-            
             <a href="/assets/import" class="btn btn-primary">
                 ⬆️ Import Excel
             </a>
+
             <a href="{{ url_for('add_asset') }}" class="btn btn-success">
                 ➕ เพิ่มครุภัณฑ์
             </a>
@@ -91,48 +93,107 @@
             <a href="/" class="btn btn-secondary">
                 ← กลับหน้าหลัก
             </a>
+
         </div>
     </div>
 
 
-    <!-- FILTER -->
-    <div class="section-box">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <h5 class="mb-0">รายการครุภัณฑ์</h5>
+    {% if request.path != '/assets/search' %}
+        <!-- FILTER -->
+        <div class="section-box">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <h5 class="mb-0">รายการครุภัณฑ์</h5>
 
-            <!-- เลือกหน่วยงาน -->
-            <select class="dept-select"
-                    onchange="changeDept(this.value)">
-                <option value=""
-                        {% if not current_dept %}selected{% endif %}>
-                    เลือกหน่วยงาน
-                </option>
+                <select class="dept-select"
+                        onchange="changeDept(this.value)">
+                    <option value=""
+                            {% if not current_dept %}selected{% endif %}>
+                        เลือกหน่วยงาน
+                    </option>
 
-                {% for short, full in dept_map.items() %}
-                <option value="{{ short }}"
-                        {% if current_dept == short %}selected{% endif %}>
-                    {{ full }}
-                </option>
-                {% endfor %}
-            </select>
+                    {% for short, full in dept_map.items() %}
+                    <option value="{{ short }}"
+                            {% if current_dept == short %}selected{% endif %}>
+                        {{ full }}
+                    </option>
+                    {% endfor %}
+                </select>
 
-            <!-- เลือกสถานะ -->
-            <select class="dept-select"
-                    onchange="changeStatus(this.value)">
-                <option value="">สถานะทั้งหมด</option>
-                <option value="ใช้งาน" {% if status == 'ใช้งาน' %}selected{% endif %}>
-                    ใช้งาน
-                </option>
-                <option value="ยังไม่ได้ตรวจสอบ"
-                        {% if status == 'ยังไม่ได้ตรวจสอบ' %}selected{% endif %}>
-                    ยังไม่ได้ตรวจสอบ
-                </option>
-                <option value="เลิกใช้" {% if status == 'เลิกใช้' %}selected{% endif %}>
-                    เลิกใช้
-                </option>
-            </select>
+                <select class="dept-select"
+                        onchange="changeStatus(this.value)">
+                    <option value="">สถานะทั้งหมด</option>
+                    <option value="ใช้งาน" {% if status == 'ใช้งาน' %}selected{% endif %}>
+                        ใช้งาน
+                    </option>
+                    <option value="ยังไม่ได้ตรวจสอบ"
+                            {% if status == 'ยังไม่ได้ตรวจสอบ' %}selected{% endif %}>
+                        ยังไม่ได้ตรวจสอบ
+                    </option>
+                    <option value="เลิกใช้" {% if status == 'เลิกใช้' %}selected{% endif %}>
+                        เลิกใช้
+                    </option>
+                </select>
+            </div>
         </div>
+        {% endif %}
+
+
+   <!-- SEARCH ASSET / SERIAL -->
+    <div class="section-box mt-3">
+        <h5 class="mb-3">🔎 ค้นหาเลขครุภัณฑ์ / รุ่น/ Serial</h5>
+
+        <form method="get" action="/assets/search">
+            <div class="row g-2 align-items-end">
+
+                <div class="col-md-3">
+                    <label class="form-label">เลขครุภัณฑ์</label>
+                    <input type="text"
+                        name="asset_no"
+                        class="form-control"
+                        placeholder="เช่น IT-00123"
+                        value="{{ request.args.get('asset_no','') }}">
+                </div>
+
+                <!-- ⭐ เพิ่มช่องนี้ -->
+                <div class="col-md-3">
+                    <label class="form-label">รุ่น</label>
+                    <input type="text"
+                        name="model"
+                        class="form-control"
+                        placeholder="เช่น Dell / HP / ThinkPad"
+                        value="{{ request.args.get('model','') }}">
+                </div>
+
+
+                <div class="col-md-3">
+                    <label class="form-label">Serial</label>
+                    <input type="text"
+                        name="serial"
+                        class="form-control"
+                        placeholder="Serial Number"
+                        value="{{ request.args.get('serial','') }}">
+                </div>
+
+                
+                <div class="col-md-3">
+                    <button type="submit"
+                            class="btn btn-primary px-5">
+                        🔍 ค้นหา
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
     </div>
+
+    {% if request.path == '/assets/search' %}
+    <div class="mb-3 text-center">
+        <a href="/assets" class="btn btn-outline-secondary">
+            🔙 กลับไปหน้ารายการครุภัณฑ์ทั้งหมด
+        </a>
+    </div>
+    {% endif %}
 
 
    
@@ -233,22 +294,15 @@
             }
             </script>
 
-            <script>
-            function changeStatus(status) {
-                const params = new URLSearchParams(window.location.search);
-
-                if (status) {
-                    params.set("status", status);
-                } else {
-                    params.delete("status");
-                }
-
-                window.location = "/assets?" + params.toString();
-            }
-            </script>
+            
 
             <script>
             function changeDept(dept) {
+                // 🔒 ถ้าอยู่หน้า search ไม่ให้ redirect
+                if (window.location.pathname === "/assets/search") {
+                    return;
+                }
+
                 const params = new URLSearchParams(window.location.search);
 
                 if (dept) {
@@ -261,6 +315,11 @@
             }
 
             function changeStatus(status) {
+                // 🔒 ถ้าอยู่หน้า search ไม่ให้ redirect
+                if (window.location.pathname === "/assets/search") {
+                    return;
+                }
+
                 const params = new URLSearchParams(window.location.search);
 
                 if (status) {
@@ -272,6 +331,7 @@
                 window.location = "/assets?" + params.toString();
             }
             </script>
+
 
 
 

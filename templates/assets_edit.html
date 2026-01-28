@@ -64,7 +64,7 @@
     <div class="section-box">
         <h5>ข้อมูลครุภัณฑ์</h5>
 
-        <form method="post">
+        <form method="post" onsubmit="showSaved()">
             <div class="row g-3">
 
                 <div class="col-md-4">
@@ -74,8 +74,46 @@
 
                 <div class="col-md-4">
                     <label class="form-label">ประเภท</label>
-                    <input name="asset_type" class="form-control" value="{{ asset[2] }}" required>
+                    <select name="asset_type" class="form-select" required>
+                        <option value="">-- เลือกประเภท --</option>
+
+                        <option value="Computer"
+                            {% if asset[2] == 'Computer' %}selected{% endif %}>
+                            Computer
+                        </option>
+
+                        <option value="Notebook"
+                            {% if asset[2] == 'Notebook' %}selected{% endif %}>
+                            Notebook
+                        </option>
+
+                        <option value="Printer"
+                            {% if asset[2] == 'Printer' %}selected{% endif %}>
+                            Printer
+                        </option>
+
+                        <option value="Scanner"
+                            {% if asset[2] == 'Scanner' %}selected{% endif %}>
+                            Scanner
+                        </option>
+
+                        <option value="Tablet"
+                            {% if asset[2] == 'Tablet' %}selected{% endif %}>
+                            Tablet
+                        </option>
+
+                        <option value="UPS"
+                            {% if asset[2] == 'UPS' %}selected{% endif %}>
+                            UPS
+                        </option>
+
+                        <option value="จอประชาสัมพันธ์"
+                            {% if asset[2] == 'จอประชาสัมพันธ์' %}selected{% endif %}>
+                            จอประชาสัมพันธ์
+                        </option>
+                    </select>
                 </div>
+
 
                 <div class="col-md-4">
                     <label class="form-label">รุ่น</label>
@@ -104,13 +142,53 @@
 
                 <div class="col-md-4">
                     <label class="form-label">ตำแหน่ง</label>
-                    <input name="position" class="form-control" value="{{ asset[8] }}">
+                    <select name="position" class="form-select" required>
+                        <option value="">-- เลือกตำแหน่ง --</option>
+                        <option value="ข้าราชการ"
+                            {% if asset[8] == 'ข้าราชการ' %}selected{% endif %}>
+                            ข้าราชการ
+                        </option>
+                        <option value="พนักงานราชการ"
+                            {% if asset[8] == 'พนักงานราชการ' %}selected{% endif %}>
+                            พนักงานราชการ
+                        </option>
+                        <option value="จ้างเหมา"
+                            {% if asset[8] == 'จ้างเหมา' %}selected{% endif %}>
+                            จ้างเหมา
+                        </option>
+                    </select>
                 </div>
+
 
                 <div class="col-md-4">
                     <label class="form-label">หน่วยงาน</label>
-                    <input name="department" class="form-control" value="{{ asset[9] }}">
+                    <select name="department" class="form-select" required>
+                        <option value="">-- เลือกหน่วยงาน --</option>
+
+                        <option value="กกม." {% if asset[9] == 'กกม.' %}selected{% endif %}>กกม.</option>
+                        <option value="กพร." {% if asset[9] == 'กพร.' %}selected{% endif %}>กพร.</option>
+                        <option value="กสส." {% if asset[9] == 'กสส.' %}selected{% endif %}>กสส.</option>
+                        <option value="กยผ." {% if asset[9] == 'กยผ.' %}selected{% endif %}>กยผ.</option>
+                        <option value="สปท." {% if asset[9] == 'สปท.' %}selected{% endif %}>สปท.</option>
+                        <option value="กตน." {% if asset[9] == 'กตน.' %}selected{% endif %}>กตน.</option>
+                        <option value="กสป." {% if asset[9] == 'กสป.' %}selected{% endif %}>กสป.</option>
+                        <option value="สชง." {% if asset[9] == 'สชง.' %}selected{% endif %}>สชง.</option>
+                        <option value="กสร." {% if asset[9] == 'กสร.' %}selected{% endif %}>กสร.</option>
+                        <option value="กพส." {% if asset[9] == 'กพส.' %}selected{% endif %}>กพส.</option>
+                        <option value="สคพ." {% if asset[9] == 'สคพ.' %}selected{% endif %}>สคพ.</option>
+                        <option value="กชช." {% if asset[9] == 'กชช.' %}selected{% endif %}>กชช.</option>
+                        <option value="ศพท." {% if asset[9] == 'ศพท.' %}selected{% endif %}>ศพท.</option>
+                        <option value="กงค." {% if asset[9] == 'กงค.' %}selected{% endif %}>กงค.</option>
+                        <option value="กบค." {% if asset[9] == 'กบค.' %}selected{% endif %}>กบค.</option>
+                        <option value="กชอ." {% if asset[9] == 'กชอ.' %}selected{% endif %}>กชอ.</option>
+                        <option value="กบพ." {% if asset[9] == 'กบพ.' %}selected{% endif %}>กบพ.</option>
+                        <option value="ห้องประชุม" {% if asset[9] == 'ห้องประชุม' %}selected{% endif %}>ห้องประชุม</option>
+                        <option value="ห้องอธิบดี" {% if asset[9] == 'ห้องอธิบดี' %}selected{% endif %}>ห้องอธิบดี</option>
+                        <option value="ห้องรองอธิบดี" {% if asset[9] == 'ห้องรองอธิบดี' %}selected{% endif %}>ห้องรองอธิบดี</option>
+
+                    </select>
                 </div>
+
 
                 <div class="col-md-4">
                     <label class="form-label">สถานะ</label>
@@ -139,6 +217,13 @@
     </div>
 
 </div>
+
+            <script>
+            function showSaved() {
+                alert("💾 บันทึกการแก้ไขเรียบร้อยแล้ว");
+            }
+            </script>
+
 
 </body>
 </html>

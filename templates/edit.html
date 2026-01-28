@@ -61,10 +61,32 @@
 
                 <div class="col-md-4 mb-3">
                     <label>หน่วยงาน</label>
-                    <input type="text" name="department"
-                           class="form-control input-md"
-                           value="{{ data.department }}">
+                    <select name="department" class="form-select input-md" required>
+                        <option value="">-- เลือกหน่วยงาน --</option>
+
+                        <option value="กกม." {% if data.department == 'กกม.' %}selected{% endif %}>กกม.</option>
+                        <option value="กพร." {% if data.department == 'กพร.' %}selected{% endif %}>กพร.</option>
+                        <option value="กสส." {% if data.department == 'กสส.' %}selected{% endif %}>กสส.</option>
+                        <option value="กยผ." {% if data.department == 'กยผ.' %}selected{% endif %}>กยผ.</option>
+                        <option value="สปท." {% if data.department == 'สปท.' %}selected{% endif %}>สปท.</option>
+                        <option value="กตน." {% if data.department == 'กตน.' %}selected{% endif %}>กตน.</option>
+                        <option value="กสป." {% if data.department == 'กสป.' %}selected{% endif %}>กสป.</option>
+                        <option value="สชง." {% if data.department == 'สชง.' %}selected{% endif %}>สชง.</option>
+                        <option value="กสร." {% if data.department == 'กสร.' %}selected{% endif %}>กสร.</option>
+                        <option value="กพส." {% if data.department == 'กพส.' %}selected{% endif %}>กพส.</option>
+                        <option value="สคพ." {% if data.department == 'สคพ.' %}selected{% endif %}>สคพ.</option>
+                        <option value="กชช." {% if data.department == 'กชช.' %}selected{% endif %}>กชช.</option>
+                        <option value="ศพท." {% if data.department == 'ศพท.' %}selected{% endif %}>ศพท.</option>
+                        <option value="กงค." {% if data.department == 'กงค.' %}selected{% endif %}>กงค.</option>
+                        <option value="กบค." {% if data.department == 'กบค.' %}selected{% endif %}>กบค.</option>
+                        <option value="กชอ." {% if data.department == 'กชอ.' %}selected{% endif %}>กชอ.</option>
+                        <option value="กบพ." {% if data.department == 'กบพ.' %}selected{% endif %}>กบพ.</option>
+                        <option value="ห้องประชุม" {% if data.department == 'ห้องประชุม' %}selected{% endif %}>ห้องประชุม</option>
+                        <option value="ห้องอธิบดี" {% if data.department == 'ห้องอธิบดี' %}selected{% endif %}>ห้องอธิบดี</option>
+                        <option value="ห้องรองอธิบดี" {% if data.department == 'ห้องรองอธิบดี' %}selected{% endif %}>ห้องรองอธิบดี</option>
+                    </select>
                 </div>
+
 
                 <div class="col-md-4 mb-3">
                     <label>ผู้แจ้ง</label>

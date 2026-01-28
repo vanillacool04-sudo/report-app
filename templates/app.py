@@ -6,11 +6,8 @@ from openpyxl import Workbook
 import base64
 import uuid
 import os
-import sqlite3
 from openpyxl.drawing.image import Image as XLImage
-import os
-import psycopg2
-from psycopg2.extras import RealDictCursor
+
 
 
 def get_departments():
@@ -668,7 +665,7 @@ def list_reports():
     from datetime import datetime
     import math
 
-    PER_PAGE = 10
+    PER_PAGE = 15
 
     page = request.args.get("page", 1, type=int)
     q = request.args.get("q", "").strip()
@@ -1501,6 +1498,57 @@ def assets_list():
         dept_map=DEPT_FULLNAME
     )
 
+# ==================================
+# ค้นหา /assets/search
+# ==================================
+@app.route("/assets/search")
+def assets_search():
+    asset_no = request.args.get("asset_no", "").strip()
+    serial = request.args.get("serial", "").strip()
+
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    where = "WHERE 1=1"
+    params = []
+
+    # 🔹 ค้นหาเลขครุภัณฑ์แบบตรงตัว
+    if asset_no:
+        where += " AND asset_no = ?"
+        params.append(asset_no)
+
+    # 🔹 ค้นหา serial แบบบางส่วน
+    if serial:
+        where += " AND serial_no LIKE ?"
+        params.append(f"%{serial}%")
+
+    cursor.execute(f"""
+        SELECT
+            id,
+            asset_no,
+            asset_type,
+            asset_model,
+            serial_no,
+            hostname,
+            owner_name,
+            department,
+            status
+        FROM assets
+        {where}
+        ORDER BY asset_no
+    """, params)
+
+    assets = cursor.fetchall()
+    conn.close()
+
+    return render_template(
+        "assets_list.html",
+        assets=assets,
+        page_title="ผลการค้นหาครุภัณฑ์",
+        current_dept=None,
+        status=None,
+        dept_map=DEPT_FULLNAME
+    )
 
     
 @app.route("/assets/add", methods=["GET", "POST"])
@@ -2397,26 +2445,23 @@ def unlock():
 # ==================================================
 # ชั่วคราว
 # ==================================================
-@app.route("/admin/fix-time")
-def admin_fix_time():
-    conn = sqlite3.connect(DB_NAME)
+@app.route("/admin/force-830")
+def force_830():
+    conn = sqlite3.connect("report.db")
     cur = conn.cursor()
 
     cur.execute("""
         UPDATE attendance
         SET time_in = '08:30'
-        WHERE TRIM(staff_name) IN (
-            'นนท์ณพัฒน์ กันตพลอิทธิ',
-            'ชัยวุฒิ ศรีแก้ว',
-            'ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง'
-        )
+        WHERE time_in = '08:35'
     """)
 
     conn.commit()
     updated = cur.rowcount
     conn.close()
 
-    return f"แก้เวลาแล้ว {updated} แถว"
+    return f"เปลี่ยนเวลาเป็น 08:30 แล้ว {updated} รายการ"
+
 
 # ==================================================
 # reset สถานะ

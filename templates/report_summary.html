@@ -108,11 +108,11 @@
             <!-- ================= ฟอร์มเลือกช่วงวันที่ ================= -->
             <form method="get" class="row g-2 mb-3 align-items-center">
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
                 </div>
 
@@ -121,13 +121,18 @@
                 </div>
 
                 <div class="col-md-2 d-grid">
+                    <a href="/work-compare" class="btn btn-outline-primary">
+                        📊 เปรียบเทียบงาน
+                    </a>
+                </div>
+
+                <div class="col-md-2 d-grid">
                     <a href="/" class="btn btn-secondary">⬅ หน้าหลัก</a>
                 </div>
 
                 {% if is_search %}
                 <div class="col-md-2 d-grid">
-                    <a
-                    href="/export-excel?date_from={{ date_from }}&date_to={{ date_to }}"
+                    <a href="/export-excel?date_from={{ date_from }}&date_to={{ date_to }}"
                     class="btn btn-success">
                     📤 Export Excel
                     </a>

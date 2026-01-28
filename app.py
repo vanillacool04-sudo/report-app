@@ -6,7 +6,6 @@ from openpyxl import Workbook
 import base64
 import uuid
 import os
-import sqlite3
 from openpyxl.drawing.image import Image as XLImage
 
 
@@ -666,7 +665,7 @@ def list_reports():
     from datetime import datetime
     import math
 
-    PER_PAGE = 10
+    PER_PAGE = 15
 
     page = request.args.get("page", 1, type=int)
     q = request.args.get("q", "").strip()
@@ -1499,6 +1498,63 @@ def assets_list():
         dept_map=DEPT_FULLNAME
     )
 
+# ==================================
+# ค้นหา /assets/search
+# ==================================
+@app.route("/assets/search")
+def assets_search():
+    asset_no = request.args.get("asset_no", "").strip()
+    serial = request.args.get("serial", "").strip()
+    model = request.args.get("model", "").strip()
+    
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    where = "WHERE 1=1"
+    params = []
+
+    # 🔹 ค้นหาเลขครุภัณฑ์แบบตรงตัว
+    if asset_no:
+        where += " AND asset_no = ?"
+        params.append(asset_no)
+    
+    # 🔹 ค้นหาเลขรุ่นแบบตรงตัว
+    if model:
+        where += " AND asset_model LIKE ?"
+        params.append(f"%{model}%")
+
+    # 🔹 ค้นหา serial แบบบางส่วน
+    if serial:
+        where += " AND serial_no LIKE ?"
+        params.append(f"%{serial}%")
+
+    cursor.execute(f"""
+        SELECT
+            id,
+            asset_no,
+            asset_type,
+            asset_model,
+            serial_no,
+            hostname,
+            owner_name,
+            department,
+            status
+        FROM assets
+        {where}
+        ORDER BY asset_no
+    """, params)
+
+    assets = cursor.fetchall()
+    conn.close()
+
+    return render_template(
+        "assets_list.html",
+        assets=assets,
+        page_title="ผลการค้นหาครุภัณฑ์",
+        current_dept=None,
+        status=None,
+        dept_map=DEPT_FULLNAME
+    )
 
     
 @app.route("/assets/add", methods=["GET", "POST"])
