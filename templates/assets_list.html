@@ -150,12 +150,12 @@
                     <input type="text"
                         name="asset_no"
                         class="form-control"
-                        placeholder="เช่น IT-00123"
+                        placeholder="เช่น 7440-00x-000x-xxx/xx"
                         value="{{ request.args.get('asset_no','') }}">
                 </div>
 
                 <!-- ⭐ เพิ่มช่องนี้ -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">รุ่น</label>
                     <input type="text"
                         name="model"
@@ -165,13 +165,22 @@
                 </div>
 
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Serial</label>
                     <input type="text"
                         name="serial"
                         class="form-control"
                         placeholder="Serial Number"
                         value="{{ request.args.get('serial','') }}">
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">ผู้ครอบครอง</label>
+                    <input type="text"
+                        name="owner"
+                        class="form-control"
+                        placeholder="ใส่ชื่อ"
+                        value="{{ request.args.get('owner','') }}">
                 </div>
 
                 

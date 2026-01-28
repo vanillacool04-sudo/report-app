@@ -1506,6 +1506,7 @@ def assets_search():
     asset_no = request.args.get("asset_no", "").strip()
     serial = request.args.get("serial", "").strip()
     model = request.args.get("model", "").strip()
+    owner = request.args.get("owner", "").strip()
     
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -1513,12 +1514,12 @@ def assets_search():
     where = "WHERE 1=1"
     params = []
 
-    # 🔹 ค้นหาเลขครุภัณฑ์แบบตรงตัว
+    # 🔹 ค้นหาเลขครุภัณฑ์ แบบบางส่วน
     if asset_no:
-        where += " AND asset_no = ?"
-        params.append(asset_no)
+        where += " AND asset_no LIKE ?"
+        params.append(f"%{asset_no}%")
     
-    # 🔹 ค้นหาเลขรุ่นแบบตรงตัว
+    # 🔹 ค้นหาเลขรุ่น แบบบางส่วน
     if model:
         where += " AND asset_model LIKE ?"
         params.append(f"%{model}%")
@@ -1527,6 +1528,11 @@ def assets_search():
     if serial:
         where += " AND serial_no LIKE ?"
         params.append(f"%{serial}%")
+        
+    # 🔹 ค้นหาผู้ครอบครอง (บางส่วน)
+    if owner:
+        where += " AND owner_name LIKE ?"
+        params.append(f"%{owner}%")
 
     cursor.execute(f"""
         SELECT
@@ -1959,18 +1965,18 @@ def assets_summary():
 
     if q:
         cursor.execute("""
-        SELECT
-            asset_no,
-            asset_type,
-            asset_model,
-            serial_no,
-            hostname,
-            owner_name,
-            department,
-            status
-        FROM assets
-        WHERE asset_no = ?
-    """, (q,))
+            SELECT
+                asset_no,
+                asset_type,
+                asset_model,
+                serial_no,
+                hostname,
+                owner_name,
+                department,
+                status
+            FROM assets
+            WHERE asset_no LIKE ?
+        """, (f"%{q}%",))
     asset_detail = cursor.fetchone()
 
     conn.close()
