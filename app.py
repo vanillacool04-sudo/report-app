@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, redirect, send_file
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from openpyxl import Workbook
+from flask import send_file, redirect, session
+from datetime import datetime
 import base64
 import uuid
 import os
@@ -229,8 +231,32 @@ from openpyxl import load_workbook
 from flask import flash, url_for
 
 
+# ==================================================
+# FIX Backup ข้อมูล
+# ==================================================
+@app.route("/admin/export-db")
+def export_db():
+    # 🔐 กันคนที่ยังไม่ unlock
+    if not session.get("unlocked"):
+        return redirect("/unlock")
 
+    # ✅ ใช้ DB ตัวเดียวกับเว็บ
+    db_path = os.path.abspath(DB_NAME)
 
+    # 🔎 กันพลาด เผื่อ path ผิด
+    if not os.path.exists(db_path):
+        return f"ไม่พบไฟล์ฐานข้อมูล: {db_path}", 404
+
+    # 📦 ตั้งชื่อไฟล์ตามวันเวลา
+    filename = f"report_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+
+    return send_file(
+        db_path,
+        as_attachment=True,
+        download_name=filename
+    )
+    
+    
 
 @app.route("/assets/import", methods=["GET"])
 def assets_import_page():

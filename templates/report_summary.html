@@ -140,8 +140,8 @@
                     </a>
                 </div>
                 {% endif %}
-                
-                
+
+        
 
             </form>
 
@@ -260,14 +260,22 @@
                 </div>
             </div>
             <!-- ================= ปุ่มไปหน้าสรุปรายเดือน ================= -->
-            <div class="d-flex justify-content-center mb-4">
+            <div class="d-flex justify-content-center gap-3 mb-4">
                 <a
                     href="/report-monthly-summary?date_from={{ date_from }}&date_to={{ date_to }}"
                     class="btn btn-outline-primary px-4"
                 >
-                    📋 ดูตารางสรุปรายเดือน
+                    📋 ตารางรายเดือน
+                </a>
+
+                <a
+                    href="/admin/export-db"
+                    class="btn btn-outline-danger px-4"
+                    onclick="return confirm('ต้องการแบคอัพฐานข้อมูลล่าสุดใช่ไหม?')">
+                    📦 Backup DB
                 </a>
             </div>
+
 
 
             {% endif %}
