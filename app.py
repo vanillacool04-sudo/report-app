@@ -232,7 +232,7 @@ from flask import flash, url_for
 
 
 # ==================================================
-# FIX Backup ข้อมูล
+# FIX Backup ข้อมูล/attendance/attendance
 # ==================================================
 @app.route("/admin/export-db")
 def export_db():
@@ -328,11 +328,25 @@ def assets_import():
 @app.route("/attendance", methods=["GET"])
 def attendance_page():
     now = datetime.now()
-
-    # ===== เดือนปัจจุบัน =====
     from calendar import monthrange
-    year = now.year
-    month = now.month
+
+    current_year = now.year
+    current_month = now.month
+
+    # ✅ รับค่าเดือนจาก query
+    month = request.args.get("month", type=int)
+
+    if month:
+        # ถ้าเลือกเดือนมากกว่าเดือนปัจจุบัน → ปีที่แล้ว
+        if month > current_month:
+            year = current_year - 1
+        else:
+            year = current_year
+    else:
+        month = current_month
+        year = current_year
+
+
 
     month_start = f"{year}-{month:02d}-01"
     last_day = monthrange(year, month)[1]
@@ -344,12 +358,12 @@ def attendance_page():
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
 
-    if selected_staff is not None and selected_staff != "":
+    if selected_staff:
         cur.execute("""
             SELECT staff_name, work_date, time_in, time_out, note
             FROM attendance
             WHERE staff_name = ?
-            AND work_date BETWEEN ? AND ?
+              AND work_date BETWEEN ? AND ?
             ORDER BY work_date DESC
         """, (selected_staff, month_start, month_end))
     else:
@@ -359,7 +373,6 @@ def attendance_page():
             WHERE work_date BETWEEN ? AND ?
             ORDER BY work_date DESC, staff_name
         """, (month_start, month_end))
-
 
     records = cur.fetchall()
     conn.close()
@@ -371,8 +384,12 @@ def attendance_page():
         records=records,
         selected_staff=selected_staff,
         today_th=today_th,
-        format_date_th_short=format_date_th_short
+        format_date_th_short=format_date_th_short,
+        selected_month=month,   # ⭐ สำคัญ
+        selected_year=year      # ⭐ สำคัญ (ไว้แสดง พ.ศ.)
     )
+
+
     
 from openpyxl import Workbook
 from flask import send_file
@@ -395,9 +412,22 @@ def export_attendance_excel():
         return "กรุณาเลือกชื่อเจ้าหน้าที่", 400
 
     now = datetime.now()
-    year = now.year
-    month = now.month
+    current_year = now.year
+    current_month = now.month
 
+    month = request.args.get("month", type=int)
+
+    if month:
+        if month > current_month:
+            year = current_year - 1
+        else:
+            year = current_year
+    else:
+        month = current_month
+        year = current_year
+
+
+    # ===== ช่วงวันที่ของเดือน =====
     last_day = monthrange(year, month)[1]
     month_start = f"{year}-{month:02d}-01"
     month_end = f"{year}-{month:02d}-{last_day}"
@@ -499,7 +529,6 @@ def export_attendance_excel():
 
     # ===== ข้อมูลรายวัน =====
     import os
-
     signature_path = f"static/signatures/{staff_name}.png"
 
     # กันพัง ถ้าไม่มีไฟล์ลายเซ็น
@@ -532,26 +561,22 @@ def export_attendance_excel():
             ws.cell(row=r, column=c).border = border
             ws.cell(row=r, column=c).alignment = center
 
+    # ===== ลายเซ็น =====
+    sign_row = start_row + last_day + 2
+    ws.merge_cells(f"B{sign_row}:F{sign_row}")
+    ws.row_dimensions[sign_row].height = 24
+    ws[f"B{sign_row}"] = "ลายเซ็นเจ้าหน้าที่ ............................................................."
+    ws[f"B{sign_row}"].alignment = center
+    ws[f"B{sign_row}"].font = Font(size=11)
 
+    name_row = sign_row + 1
+    ws.merge_cells(f"B{name_row}:F{name_row}")
+    ws.row_dimensions[name_row].height = 22
+    ws[f"B{name_row}"] = "(....................................................................................)"
+    ws[f"B{name_row}"].alignment = center
+    ws[f"B{name_row}"].font = Font(size=10)
 
-
-
-        # ===== ลายเซ็น =====
-        sign_row = start_row + last_day + 2
-        ws.merge_cells(f"B{sign_row}:F{sign_row}")
-        ws.row_dimensions[sign_row].height = 24
-        ws[f"B{sign_row}"] = "ลายเซ็นเจ้าหน้าที่ ............................................................."
-        ws[f"B{sign_row}"].alignment = center
-        ws[f"B{sign_row}"].font = Font(size=11)
-
-        name_row = sign_row + 1
-
-        ws.merge_cells(f"B{name_row}:F{name_row}")
-        ws.row_dimensions[name_row].height = 22
-        ws[f"B{name_row}"] = "(....................................................................................)"
-        ws[f"B{name_row}"].alignment = center
-        ws[f"B{name_row}"].font = Font(size=10)
-            # ===== ส่งไฟล์ =====
+    # ===== ส่งไฟล์ =====
     stream = io.BytesIO()
     wb.save(stream)
     stream.seek(0)
@@ -564,6 +589,7 @@ def export_attendance_excel():
         download_name=filename,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
 
 
 

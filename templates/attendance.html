@@ -59,6 +59,17 @@
                     <option value="ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง" {% if selected_staff=="ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง" %}selected{% endif %}>ว่าทีร้อยตรี ณรงค์ศักดิ์ สุทธาแสง</option>
                 </select>
 
+                <select name="month" class="form-select" style="width:140px">
+                    {% for m in range(1,13) %}
+                    <option value="{{ m }}"
+                        {% if selected_month == m %}selected{% endif %}>
+                        {{ m }} / {{ selected_year + 543 }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                
+
                 <button class="btn btn-primary btn-sm">
                     ดูข้อมูล
                 </button>
@@ -67,10 +78,8 @@
                     แสดงทั้งหมด
                 </a>
                 {% if selected_staff %}
-                <a
-                href="/attendance/export?staff_name={{ selected_staff }}"
-                class="btn btn-outline-success btn-sm"
-                >
+                <a href="/attendance/export?staff_name={{ selected_staff }}&month={{ selected_month }}"
+                class="btn btn-outline-success btn-sm">
                 📤 Export
                 </a>
                 {% endif %}
@@ -115,7 +124,7 @@
     <div class="card">
         <div class="card-body">
             <h5 class="fw-bold mb-3">
-                📋 ประวัติลงเวลา ({{ today_th }})
+                📋 ประวัติลงเวลาเข้า-ออกงาน
             </h5>
             
             <div class="table-responsive">
